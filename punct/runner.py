@@ -117,7 +117,7 @@ def run_method(name: str, articles: Sequence[np.ndarray], logits_fn: LogitsFn, s
 
 def score(gold: Sequence[np.ndarray], pred: Sequence[np.ndarray], seam_stride: int = 400,
           seam_margin: int = 8) -> Dict:
-    """Full quality metric set on concatenated articles (+ per-article F1 summary)."""
+    """Full quality metric set on concatenated articles (+ per-article F1 summary + length groups)."""
     g, p = np.concatenate(gold), np.concatenate(pred)
     prf = punctuation_prf(g, p, 8, 0)
     out = {
@@ -141,6 +141,11 @@ def score(gold: Sequence[np.ndarray], pred: Sequence[np.ndarray], seam_stride: i
         out["per_article_f1_mean"] = float(np.mean(per_art))
         out["per_article_f1_median"] = float(np.median(per_art))
         out["n_articles_scored"] = len(per_art)
+
+    # F1 by article length groups (short: <=400, medium: 401-2000, long: >2000)
+    from punct.metrics import f1_by_article_length
+    out["f1_by_length"] = f1_by_article_length(gold, pred, num_labels=8, none_label=0)
+
     return out
 
 

@@ -126,6 +126,40 @@ def main():
     codec.save(OUT_DIR / "char_codec.json")
     print(f"\nSaved to {OUT_DIR}/")
 
+    # Save dataset statistics
+    print("\n保存数据集统计...")
+    def compute_label_dist(labels_list):
+        all_labels = np.concatenate(labels_list)
+        counts = np.bincount(all_labels, minlength=8)
+        return {int(i): int(c) for i, c in enumerate(counts)}
+
+    def get_split_stats(chars_list, labels_list, name):
+        total_chars = sum(len(c) for c in chars_list)
+        total_puncts = sum(int(np.sum(l > 0)) for l in labels_list)
+        return {
+            "n_articles": len(chars_list),
+            "total_chars": total_chars,
+            "total_punctuation": total_puncts,
+            "label_distribution": compute_label_dist(labels_list),
+            "avg_article_length": total_chars / len(chars_list) if chars_list else 0,
+        }
+
+    stats = {
+        "dataset": "人民日报1998年1-6月",
+        "splits": {
+            "train": get_split_stats(train_char, train_label, "train"),
+            "dev": get_split_stats(dev_char, dev_label, "dev"),
+            "test": get_split_stats(test_char, test_label, "test"),
+        },
+        "vocab_size": len(codec.char2id),
+        "labels": LABELS,
+    }
+
+    stats_file = OUT_DIR / "dataset_stats.json"
+    with open(stats_file, "w", encoding="utf-8") as f:
+        json.dump(stats, f, indent=2, ensure_ascii=False)
+    print(f"  统计已保存: {stats_file}")
+
     # Compute SHA-256 hashes for data integrity
     print("\nComputing SHA-256 hashes...")
     import hashlib
