@@ -26,8 +26,10 @@ import torch
 import torch.nn.functional as F
 from transformers import BertForTokenClassification, get_linear_schedule_with_warmup
 
-# add parent to sys.path so we can import punct.*
-sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+# ensure project root is in sys.path so we can import punct.*
+_script_dir = os.path.dirname(os.path.abspath(__file__))
+if _script_dir not in sys.path:
+    sys.path.insert(0, _script_dir)
 
 from punct.codec import CharCodec
 from punct.data import WindowDataset, collate_windows
