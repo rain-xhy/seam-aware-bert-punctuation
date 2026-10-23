@@ -207,3 +207,87 @@ def compute_metrics(eval_pred) -> Dict:
         "sentence_final_f1": sf["f1"],
         "accuracy": prf["accuracy"],
     }
+
+
+# ---------------------------------------------------------------------------
+# Additional diagnostics (error decomposition, fixed-position seam F1,
+# per-character frequency baseline).
+# ---------------------------------------------------------------------------
+
+def error_decomposition(gold: np.ndarray, pred: np.ndarray, none_label: int = 0) -> Dict:
+    """Split every wrong position into one of three kinds.
+
+    missed:   gold is a mark, prediction is "none"      (漏标)
+    spurious: gold is "none", prediction is a mark      (误插)
+    confused: both are marks but different classes      (类别错)
+    """
+    if gold.shape != pred.shape:
+        raise ValueError(f"shape mismatch: gold={gold.shape} pred={pred.shape}")
+    g_mark = gold != none_label
+    p_mark = pred != none_label
+    missed = int(np.sum(g_mark & ~p_mark))
+    spurious = int(np.sum(~g_mark & p_mark))
+    confused = int(np.sum(g_mark & p_mark & (gold != pred)))
+    total = missed + spurious + confused
+    return {
+        "missed": missed,
+        "spurious": spurious,
+        "confused": confused,
+        "total_errors": total,
+        "gold_marks": int(g_mark.sum()),
+    }
+
+
+def seam_f1_fixed_positions(
+    gold: np.ndarray,
+    pred: np.ndarray,
+    boundaries,
+    margin: int = 8,
+    num_labels: int = 8,
+    none_label: int = 0,
+) -> Dict:
+    """Seam F1 with a method-independent definition of "seam".
+
+    `boundaries` is a list of global character offsets (e.g. every multiple of
+    a reference stride). A position counts as seam if it lies within `margin`
+    characters of any boundary, on either side. Because the set does not
+    depend on the decoding method, all methods are scored on the same
+    positions.
+    """
+    n = len(gold)
+    if gold.shape != pred.shape:
+        raise ValueError(f"shape mismatch: gold={gold.shape} pred={pred.shape}")
+    mask = np.zeros(n, dtype=bool)
+    for b in boundaries:
+        lo, hi = max(0, int(b) - margin), min(n, int(b) + margin)
+        if lo < hi:
+            mask[lo:hi] = True
+    out = {"seam_positions": int(mask.sum()), "interior_positions": int((~mask).sum())}
+    for name, m in (("seam", mask), ("interior", ~mask)):
+        if m.any():
+            prf = punctuation_prf(gold[m], pred[m], num_labels, none_label)
+            out[f"{name}_f1"] = prf["micro_f1"]
+        else:
+            out[f"{name}_f1"] = 0.0
+        out[f"{name}_support"] = int(np.sum(gold[m] != none_label))
+    return out
+
+
+def fit_char_frequency_baseline(char_ids_list, label_ids_list, num_labels: int = 8) -> Dict[int, int]:
+    """For every character id, the most frequent label that follows it in the
+    training data. Ties break toward the smaller label id."""
+    counts: Dict[int, np.ndarray] = {}
+    for chars, labels in zip(char_ids_list, label_ids_list):
+        for c, l in zip(chars.tolist(), labels.tolist()):
+            if l < 0:
+                continue
+            arr = counts.get(c)
+            if arr is None:
+                arr = counts[c] = np.zeros(num_labels, dtype=np.int64)
+            arr[l] += 1
+    return {c: int(np.argmax(a)) for c, a in counts.items()}
+
+
+def predict_char_frequency_baseline(table: Dict[int, int], chars: np.ndarray, default: int = 0) -> np.ndarray:
+    """Look every character up in the majority-label table."""
+    return np.array([table.get(int(c), default) for c in chars], dtype=np.int64)
