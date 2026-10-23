@@ -1,0 +1,91 @@
+{
+  "config": {
+    "crop": {
+      "min_len": 32,
+      "max_len": 510,
+      "edge_aware_prob": 0.3,
+      "edge_aware_min_right": 1,
+      "center_only_supervision": false,
+      "center_margin": 50
+    },
+    "class_weighted_loss": false,
+    "lr": 3e-05,
+    "weight_decay": 0.01,
+    "warmup_ratio": 0.1,
+    "grad_clip": 1.0,
+    "epochs": 1,
+    "micro_batch": 8,
+    "grad_accum": 1,
+    "seed": 0,
+    "steps_per_epoch": 200,
+    "val_max_articles": 50
+  },
+  "n_train_articles": 12128,
+  "steps_per_epoch": 200,
+  "total_optimizer_steps_planned": 200,
+  "epochs": [
+    {
+      "epoch": 1,
+      "mean_train_loss": 0.23016090644523501,
+      "val_micro_f1": 0.7440878378378378,
+      "val_report": {
+        "per_class": {
+          "1": {
+            "precision": 0.7612179487179487,
+            "recall": 0.7864238410596026,
+            "f1": 0.773615635179153,
+            "support": 604
+          },
+          "2": {
+            "precision": 0.7938461538461539,
+            "recall": 0.8431372549019608,
+            "f1": 0.8177496038034865,
+            "support": 306
+          },
+          "3": {
+            "precision": 0.7164948453608248,
+            "recall": 0.5650406504065041,
+            "f1": 0.6318181818181818,
+            "support": 246
+          },
+          "4": {
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0,
+            "support": 9
+          },
+          "5": {
+            "precision": 1.0,
+            "recall": 0.20930232558139536,
+            "f1": 0.3461538461538462,
+            "support": 43
+          },
+          "6": {
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0,
+            "support": 5
+          },
+          "7": {
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0,
+            "support": 3
+          }
+        },
+        "micro_precision": 0.7647569444444444,
+        "micro_recall": 0.7245065789473685,
+        "micro_f1": 0.7440878378378378,
+        "macro_f1": 0.36704818099352393,
+        "accuracy": 0.9709113224915619,
+        "n_positions": 16295
+      },
+      "epoch_seconds": 55.655550718307495
+    }
+  ],
+  "encoder_weight_max_abs_diff": 0.0015775412321090698,
+  "encoder_weights_changed": true,
+  "total_wall_seconds": 56.951706886291504,
+  "optimizer_updates_completed": 200,
+  "peak_memory_mib": 3061.17578125
+}
