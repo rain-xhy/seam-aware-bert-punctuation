@@ -1,0 +1,20 @@
+Month 1: 3290859 char-label pairs
+Month 2: 3365016 char-label pairs
+Month 3: 3681738 char-label pairs
+Month 4: 3776482 char-label pairs
+Month 5: 3662303 char-label pairs
+Month 6: 3678942 char-label pairs
+Total: 21455340 pairs
+Label distribution:
+    O: 21321118 (99.37%)
+    ,:        0 (0.00%)
+    。:        0 (0.00%)
+    ?:        0 (0.00%)
+    !:        0 (0.00%)
+    ;:        0 (0.00%)
+    ::        0 (0.00%)
+    、:   134222 (0.63%)
+train: 19309806 pairs saved
+dev: 1072767 pairs saved
+test: 1072767 pairs saved
+Done. Output: E:\desktop\北大软微\课程\大语言模型应用与实践\作业\8\代码\seam-aware-bert-punctuation\prepared_data_full

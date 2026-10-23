@@ -1,0 +1,6 @@
+Traceback (most recent call last):
+  File "train.py", line 154, in <module>
+    main()
+  File "train.py", line 108, in main
+    codec = CharCodec.load(codec_path)
+AttributeError: type object 'CharCodec' has no attribute 'load'

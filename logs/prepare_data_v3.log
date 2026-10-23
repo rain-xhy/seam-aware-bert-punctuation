@@ -1,0 +1,11 @@
+Reading E:/desktop/北大软微/课程/大语言模型应用与实践/作业/8/1998-上半年-带音/1998-01-2003版-带音.txt ...
+  3132 articles
+Loading vocab from bert-base-chinese/vocab.txt ...
+Encoding articles...
+  3073 articles after filtering
+  1773456 chars, 58813 punctuation marks
+  train: 2458 articles, dev: 615 articles
+Saved to prepared_data/
+  train_articles_char.npy: 2458 articles
+  dev_articles_char.npy: 615 articles
+  char_codec.json: 21127 vocab entries

@@ -1,0 +1,7 @@
+Reading ../1998-上半年-带音/1998-01.txt ...
+Traceback (most recent call last):
+  File "prepare_data.py", line 120, in <module>
+    main()
+  File "prepare_data.py", line 77, in main
+    with open(args.corpus, "r", encoding="gb18030", errors="replace") as f:
+FileNotFoundError: [Errno 2] No such file or directory: '../1998-上半年-带音/1998-01.txt'

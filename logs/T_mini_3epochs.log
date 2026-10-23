@@ -1,0 +1,29 @@
+﻿python.exe : Some weights of BertForTokenClassification were not initialized from the model checkpoint at bert-base-chi
+nese and are newly initialized: ['classifier.bias', 'classifier.weight']
+At line:1 char:433
++ ... nctuation"; & "E:\anaconda\app\envs\yolov8\python.exe" -X utf8 train. ...
++                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (Some weights of...sifier.weight']:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+You should probably TRAIN this model on a down-stream task to be able to use it for predictions and inference.
+Training 3 epochs, 1000 batches/epoch, grad_accum=4
+Total steps=750, warmup=75, device=cuda
+Epoch 1/3 | train_loss=0.2159 | val_loss=0.1494 | time=112.8s
+  Val micro-F1=0.1298 | macro-F1=0.0350
+  ✓ Saved best checkpoint to checkpoints/T_mini\best.pt
+Epoch 2/3 | train_loss=0.0773 | val_loss=0.1514 | time=109.3s
+  Val micro-F1=0.2620 | macro-F1=0.0730
+  ✓ Saved best checkpoint to checkpoints/T_mini\best.pt
+Epoch 3/3 | train_loss=0.0577 | val_loss=0.1702 | time=101.0s
+  Val micro-F1=0.2837 | macro-F1=0.0810
+  ✓ Saved best checkpoint to checkpoints/T_mini\best.pt
+
+Training finished. Best val micro-F1=0.2837, checkpoint=checkpoints/T_mini\best.pt
+E:\anaconda\app\envs\yolov8\lib\site-packages\torch\nn\modules\module.py:1160: UserWarning: expandable_segments not sup
+ported on this platform (Triggered internally at C:\cb\pytorch_1000000000000\work\c10/cuda/CUDAAllocatorConfig.h:28.)
+  return t.to(
+E:\anaconda\app\envs\yolov8\lib\site-packages\transformers\models\bert\modeling_bert.py:440: UserWarning: 1Torch was no
+t compiled with flash attention. (Triggered internally at C:\cb\pytorch_1000000000000\work\aten\src\ATen\native\transfo
+rmers\cuda\sdp_utils.cpp:555.)
+  attn_output = torch.nn.functional.scaled_dot_product_attention(

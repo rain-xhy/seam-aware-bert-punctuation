@@ -1,0 +1,15 @@
+[2026-10-23 17:57:18] === Training Monitor Started ===
+[2026-10-23 17:57:18] Watching: E:\desktop\北大软微\课程\大语言模型应用与实践\作业\8\代码\seam-aware-bert-punctuation\logs\T1_varlen_train.log
+[2026-10-23 17:57:18] Status changed: None -> error
+[2026-10-23 17:57:18] ❌ ERROR DETECTED!
+[2026-10-23 17:57:18] Error details:
+﻿python.exe : Some weights of BertForTokenClassification were not initialized from the model checkpoint at bert-base-chi
+nese and are newly initialized: ['classifier.bias', 'classifier.weight']
+At line:1 char:554
++ ... H:mm:ss')"; & "E:\anaconda\app\envs\yolov8\python.exe" -X utf8 train. ...
++                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (Some weights of...sifier.weight']:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+You should probably TRAIN this model on a down-stream task to be able to use it for predictions and inference.
+

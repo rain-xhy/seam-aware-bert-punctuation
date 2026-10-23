@@ -84,6 +84,101 @@ def all_none_baseline_accuracy(gold: np.ndarray, none_label: int = 0) -> float:
     return float(np.mean(gold == none_label))
 
 
+def seam_f1(
+    gold: np.ndarray,
+    pred: np.ndarray,
+    windows,  # List[Window] from punct.inference
+    seam_margin: int = 8,
+    num_labels: int = 8,
+    none_label: int = 0
+) -> Dict:
+    """计算接缝F1 vs 内部F1.
+
+    Args:
+        gold, pred: [text_len]
+        windows: 窗口列表
+        seam_margin: 接缝定义：离边缘≤seam_margin字
+
+    Returns:
+        {'seam_f1': ..., 'interior_f1': ..., 'seam_support': ..., 'interior_support': ...}
+    """
+    text_len = len(gold)
+
+    # 标记接缝区域
+    seam_mask = np.zeros(text_len, dtype=bool)
+    for win in windows:
+        # 左接缝
+        for i in range(win.start, min(win.start + seam_margin, win.end)):
+            if 0 <= i < text_len:
+                seam_mask[i] = True
+        # 右接缝
+        for i in range(max(win.end - seam_margin, win.start), win.end):
+            if 0 <= i < text_len:
+                seam_mask[i] = True
+
+    # 分组
+    seam_gold = gold[seam_mask]
+    seam_pred = pred[seam_mask]
+    interior_gold = gold[~seam_mask]
+    interior_pred = pred[~seam_mask]
+
+    # 计算F1
+    seam_prf = punctuation_prf(seam_gold, seam_pred, num_labels, none_label) if len(seam_gold) > 0 else {'micro_f1': 0.0}
+    interior_prf = punctuation_prf(interior_gold, interior_pred, num_labels, none_label) if len(interior_gold) > 0 else {'micro_f1': 0.0}
+
+    return {
+        'seam_f1': seam_prf['micro_f1'],
+        'interior_f1': interior_prf['micro_f1'],
+        'seam_support': int(np.sum(seam_gold > 0)),
+        'interior_support': int(np.sum(interior_gold > 0)),
+        'seam_positions': int(np.sum(seam_mask)),
+        'interior_positions': int(np.sum(~seam_mask))
+    }
+
+
+def f1_by_article_length(
+    gold_per_article: List[np.ndarray],
+    pred_per_article: List[np.ndarray],
+    num_labels: int = 8,
+    none_label: int = 0
+) -> Dict:
+    """按文章长度分组计算F1.
+
+    Args:
+        gold_per_article: [num_articles][article_len]
+        pred_per_article: [num_articles][article_len]
+
+    Returns:
+        {'short': {'f1': ..., 'support': ...}, 'medium': ..., 'long': ...}
+    """
+    buckets = {'short': (0, 400), 'medium': (401, 2000), 'long': (2001, 999999)}
+    results = {}
+
+    for bucket_name, (min_len, max_len) in buckets.items():
+        gold_list = []
+        pred_list = []
+
+        for g, p in zip(gold_per_article, pred_per_article):
+            if min_len <= len(g) <= max_len:
+                gold_list.append(g)
+                pred_list.append(p)
+
+        if len(gold_list) > 0:
+            gold_concat = np.concatenate(gold_list)
+            pred_concat = np.concatenate(pred_list)
+            prf = punctuation_prf(gold_concat, pred_concat, num_labels, none_label)
+            results[bucket_name] = {
+                'micro_f1': prf['micro_f1'],
+                'macro_f1': prf['macro_f1'],
+                'support': prf['n_positions'],
+                'num_articles': len(gold_list)
+            }
+        else:
+            results[bucket_name] = {'micro_f1': 0.0, 'support': 0, 'num_articles': 0}
+
+    return results
+
+
 def compute_metrics(eval_pred) -> Dict:
     """Compute metrics for training/validation. `eval_pred` is an EvalPrediction
     object with .predictions (logits) and .label_ids (gold labels)."""

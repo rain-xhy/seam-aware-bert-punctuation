@@ -1,0 +1,15 @@
+Some weights of BertForTokenClassification were not initialized from the model checkpoint at bert-base-chinese and are newly initialized: ['classifier.bias', 'classifier.weight']
+You should probably TRAIN this model on a down-stream task to be able to use it for predictions and inference.
+E:\anaconda\app\envs\yolov8\lib\site-packages\transformers\models\bert\modeling_bert.py:440: UserWarning: 1Torch was not compiled with flash attention. (Triggered internally at C:\cb\pytorch_1000000000000\work\aten\src\ATen\native\transformers\cuda\sdp_utils.cpp:555.)
+  attn_output = torch.nn.functional.scaled_dot_product_attention(
+Training 3 epochs, 12290 batches/epoch, grad_accum=4
+Total steps=9216, warmup=921, device=cuda
+Traceback (most recent call last):
+  File "train.py", line 169, in <module>
+    main()
+  File "train.py", line 155, in main
+    val_loss, val_metrics = validate(model, val_loader, device)
+  File "train.py", line 88, in validate
+    predictions=np.concatenate(all_logits, axis=0),  # [total_samples, seq, num_labels]
+  File "<__array_function__ internals>", line 200, in concatenate
+ValueError: all the input array dimensions except for the concatenation axis must match exactly, but along dimension 1, the array at index 0 has size 107 and the array at index 1 has size 309

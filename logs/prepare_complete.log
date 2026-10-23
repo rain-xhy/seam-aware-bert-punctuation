@@ -1,0 +1,17 @@
+﻿=== Preparing complete 1-6 month data ===
+Split: 1-4月训练，5月验证，6月测试
+Month 1: 3072 articles
+Month 2: 2594 articles
+Month 3: 2858 articles
+Month 4: 3427 articles
+Month 5: 3176 articles
+Month 6: 3238 articles
+
+Total: train=11951, dev=3176, test=3238
+
+Encoding...
+train: 11951 articles, 7245417 chars, 602465 punctuation
+dev: 3176 articles, 1876001 chars, 153466 punctuation
+test: 3238 articles, 1892857 chars, 153154 punctuation
+
+Saved to E:\desktop\北大软微\课程\大语言模型应用与实践\作业\8\代码\seam-aware-bert-punctuation\prepared_data_complete/
