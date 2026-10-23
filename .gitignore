@@ -1,0 +1,46 @@
+# Models and large files
+bert-base-chinese/
+checkpoints/
+*.npz
+*.safetensors
+*.bin
+*.pt
+*.pth
+
+# Corpus
+../../1998-*
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+venv/
+ENV/
+.venv
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs (keep directory, ignore large logs)
+logs/*.log
+!logs/.gitkeep
+
+# Temporary
+*.tmp
+*.bak
+.cache/
