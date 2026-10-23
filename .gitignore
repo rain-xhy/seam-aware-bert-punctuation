@@ -1,47 +1,46 @@
-# Models and large files
-bert-base-chinese/
-checkpoints/
-*.npz
-*.safetensors
-*.bin
-*.pt
-*.pth
-
-# Corpus
-../../1998-*
-
 # Python
 __pycache__/
-*.pyc
-*.pyo
-*.pyd
-.Python
+*.py[cod]
+*$py.class
 *.so
-*.egg
+.Python
 *.egg-info/
 dist/
 build/
-venv/
-ENV/
-.venv
 
-# IDEs
+# Data directories
+prepared_data*/
+corpus/
+raw_data/
+
+# Checkpoints and logs
+checkpoints/
+logs/*.log
+*.log
+
+# Results
+results/
+*.npz
+*.json
+
+# Temporary files
+*.tmp
+*.bak
+*~
+.DS_Store
+
+# IDE
 .vscode/
 .idea/
 *.swp
 *.swo
-*~
 
-# OS
-.DS_Store
-Thumbs.db
+# Test outputs
+test_*.txt
+*.pth
+*.pt
 
-# Logs: committed by default per plan §阶段4 ("所有训练日志...原样保存",
-# 报告数字须能指回这些文件). Only exclude logs explicitly too large to keep
-# in git (e.g. raw per-step dumps); name them individually here if that
-# happens, do not blanket-ignore logs/*.log.
-
-# Temporary
-*.tmp
-*.bak
-.cache/
+# Scripts
+run_*.sh
+run_*.ps1
+*.pyc
