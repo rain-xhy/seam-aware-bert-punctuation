@@ -31,8 +31,8 @@ _script_dir = os.path.dirname(os.path.abspath(__file__))
 if _script_dir not in sys.path:
     sys.path.insert(0, _script_dir)
 
-from punct.codec import CharCodec
-from punct.data import WindowDataset, collate_windows
+from punct.char_codec import CharCodec
+from punct.dataset import WindowDataset, collate_windows
 from punct.metrics import compute_metrics
 
 
