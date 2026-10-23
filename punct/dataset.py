@@ -111,3 +111,54 @@ def collate_batch(crops: List[CropResult], cls_id: int, sep_id: int, pad_id: int
         label_ids[row, 1:1 + n] = crop.label_ids
 
     return input_ids, attention_mask, label_ids
+
+
+class WindowDataset:
+    """PyTorch Dataset that loads articles from prepared_data/ and generates
+    random crops on the fly."""
+    def __init__(self, data_dir: str, split: str, cfg: CropConfig, seed: int = 42):
+        import os
+        self.articles_char = np.load(os.path.join(data_dir, f"{split}_articles_char.npy"), allow_pickle=True)
+        self.articles_label = np.load(os.path.join(data_dir, f"{split}_articles_label.npy"), allow_pickle=True)
+        self.cfg = cfg
+        self.rng = random.Random(seed)
+        self.epoch_seed = seed
+
+    def __len__(self):
+        return len(self.articles_char) * 10  # 10 crops per article per epoch
+
+    def __getitem__(self, idx):
+        article_idx = idx % len(self.articles_char)
+        crop = pick_crop(
+            self.articles_char[article_idx],
+            self.articles_label[article_idx],
+            article_idx,
+            self.cfg,
+            self.rng
+        )
+        if crop is None:
+            # Article too short, try next one
+            article_idx = (article_idx + 1) % len(self.articles_char)
+            crop = pick_crop(
+                self.articles_char[article_idx],
+                self.articles_label[article_idx],
+                article_idx,
+                self.cfg,
+                self.rng
+            )
+        return crop
+
+    def set_epoch(self, epoch: int):
+        """Re-seed RNG for each epoch to get different crops."""
+        self.rng = random.Random(self.epoch_seed + epoch)
+
+
+def collate_windows(batch: List[CropResult], cls_id: int, sep_id: int, pad_id: int):
+    """Wrapper for collate_batch that returns torch tensors."""
+    import torch
+    input_ids, attention_mask, label_ids = collate_batch(batch, cls_id, sep_id, pad_id)
+    return {
+        'input_ids': torch.from_numpy(input_ids),
+        'attention_mask': torch.from_numpy(attention_mask),
+        'labels': torch.from_numpy(label_ids)
+    }
