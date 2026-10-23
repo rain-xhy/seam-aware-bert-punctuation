@@ -82,3 +82,33 @@ def all_none_baseline_accuracy(gold: np.ndarray, none_label: int = 0) -> float:
     """Accuracy of always predicting 'no punctuation' — the trivial baseline
     every classmate reports alongside their real F1."""
     return float(np.mean(gold == none_label))
+
+
+def compute_metrics(eval_pred) -> Dict:
+    """Compute metrics for training/validation. `eval_pred` is an EvalPrediction
+    object with .predictions (logits) and .label_ids (gold labels)."""
+    logits, labels = eval_pred.predictions, eval_pred.label_ids
+    # logits shape: (batch, seq_len, num_labels)
+    # labels shape: (batch, seq_len)
+    pred = np.argmax(logits, axis=-1).flatten()
+    gold = labels.flatten()
+
+    # Filter out ignored positions (label == -100)
+    mask = gold != -100
+    pred = pred[mask]
+    gold = gold[mask]
+
+    # Compute punctuation P/R/F1 (7 classes, excluding label 0)
+    prf = punctuation_prf(gold, pred, num_labels=8, none_label=0)
+
+    # Sentence-final F1 (labels 2=。, 3=?, 4=!)
+    sf = sentence_final_f1(gold, pred, sentence_final_labels=[2, 3, 4])
+
+    return {
+        "micro_f1": prf["micro_f1"],
+        "macro_f1": prf["macro_f1"],
+        "micro_precision": prf["micro_precision"],
+        "micro_recall": prf["micro_recall"],
+        "sentence_final_f1": sf["f1"],
+        "accuracy": prf["accuracy"],
+    }
