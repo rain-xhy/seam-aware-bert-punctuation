@@ -1,0 +1,21 @@
+== versions ==
+python 3.8.20
+torch 2.4.1
+transformers 4.46.3
+tokenizers 0.20.3
+numpy 1.24.3
+scipy 1.10.1
+pandas 2.0.3
+matplotlib 3.7.5
+safetensors 0.5.3
+torch cuda 12.4 cudnn 90100
+== gpu ==
+NVIDIA GeForce RTX 3050 Laptop GPU, 581.95, 4096 MiB
+== disk ==
+Filesystem      Size  Used Avail Use% Mounted on
+E:              232G  226G  6.7G  98% /e
+C:              392G  390G  1.9G 100% /c
+== sha256 ==
+3404a1ffd8da507042e8161013ba2a4fc49858b4e3f8fbf5ce5724f94883aec3 *bert-base-chinese/model.safetensors
+45bbac6b341c319adc98a532532882e91a9cefc0329aa57bac9ae761c27b291c *bert-base-chinese/vocab.txt
+88af762cfb15fa9ce183c84dcbfdc9d635196ba635dfe81f265fdd21d67f4c4c *bert-base-chinese/config.json

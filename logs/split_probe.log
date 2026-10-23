@@ -1,0 +1,11 @@
+train: articles=12128 chars=7125456 >510=4658 >2000=389 >5000=44 max=15365
+val: articles=3223 chars=1846905 >510=1182 >2000=108 >5000=10 max=10542
+test: articles=3280 chars=1863769 >510=1222 >2000=100 >5000=8 max=9592
+test tail rule (W,V): windows / TER for align vs short
+  W=64 V=0: align: windows=30741 TER=1.0541 | short: windows=30741 TER=1.0000
+  W=125 V=20: align: windows=18740 TER=1.2440 | short: windows=18740 TER=1.1659
+  W=128 V=20: align: windows=18282 TER=1.2418 | short: windows=18282 TER=1.1610
+  W=400 V=100: align: windows=7155 TER=1.3460 | short: windows=7155 TER=1.2079
+  W=510 V=0: align: windows=5474 TER=1.1964 | short: windows=5474 TER=1.0000
+  W=510 V=20: align: windows=5532 TER=1.2122 | short: windows=5532 TER=1.0242
+  W=510 V=64: align: windows=5661 TER=1.2475 | short: windows=5661 TER=1.0818

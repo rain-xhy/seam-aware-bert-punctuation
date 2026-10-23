@@ -1,0 +1,11 @@
+# Tang et al. 2021 (CCL) Table 7, read from rendered page image tang2021_p9.png; 4168-char text
+direct_trunc  win=64  P=0.8657 R=0.9522 F1=0.9069 time=5.74s
+serial1(2019) win=64  P=0.8931 R=0.9597 F1=0.9252 time=1288.58s
+serial2       win=128 P=0.9207 R=0.9701 F1=0.9448 time=115.28s
+parallel      win=128 P=0.9242 R=0.9642 F1=0.9438 time=5.79s
+# derived ratios (my arithmetic on the numbers above)
+serial1/serial2 = 11.18
+serial1/parallel = 222.55
+serial2/parallel = 19.91
+parallel/direct = 1.009
+F1 serial2 - parallel = 0.0010

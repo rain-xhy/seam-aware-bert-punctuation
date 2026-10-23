@@ -1,0 +1,6 @@
+inputs: W=510 B=1 45848 chars/s | plateau (best of B>=8) 62487 chars/s
+inputs: TER aligned 1.2122, short 1.0242 (W=510 V=20) | serial TER lower bound 1.3333
+batching alone at W=510: plateau / B=1 = 1.36x
+forward-only speed-up of parallel short-tail vs teacher serial (B=1): 1.77x
+forward-only speed-up of parallel short-tail vs cross-article serial: 1.30x
+short tail vs aligned tail, same W/V: 15.5% less time, 18.4% higher throughput

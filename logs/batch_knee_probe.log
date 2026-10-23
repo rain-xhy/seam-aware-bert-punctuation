@@ -1,0 +1,40 @@
+Some weights of BertForTokenClassification were not initialized from the model checkpoint at bert-base-chinese and are newly initialized: ['classifier.bias', 'classifier.weight']
+You should probably TRAIN this model on a down-stream task to be able to use it for predictions and inference.
+E:\anaconda\app\envs\yolov8\lib\site-packages\transformers\models\bert\modeling_bert.py:440: UserWarning: 1Torch was not compiled with flash attention. (Triggered internally at C:\cb\pytorch_1000000000000\work\aten\src\ATen\native\transformers\cuda\sdp_utils.cpp:555.)
+  attn_output = torch.nn.functional.scaled_dot_product_attention(
+
+W=64  (chars/s counts window characters only, excluding [CLS]/[SEP])
+  B= 1: asc 6007 / desc 4878 chars/s (mean 5442, asc-desc gap 20.7%), median 10.7 ms, sd 2.39 ms, peak 220 MiB
+  B= 2: asc 15040 / desc 11194 chars/s (mean 13117, asc-desc gap 29.3%), median 8.5 ms, sd 2.69 ms, peak 220 MiB  gain +141.0%
+  B= 4: asc 28351 / desc 26211 chars/s (mean 27281, asc-desc gap 7.8%), median 9.0 ms, sd 1.83 ms, peak 223 MiB  gain +108.0%
+  B= 8: asc 44033 / desc 37845 chars/s (mean 40939, asc-desc gap 15.1%), median 11.6 ms, sd 1.27 ms, peak 226 MiB  gain +50.1%
+  B=16: asc 53135 / desc 50291 chars/s (mean 51713, asc-desc gap 5.5%), median 19.3 ms, sd 0.82 ms, peak 236 MiB  gain +26.3%
+  B=32: asc 59214 / desc 58921 chars/s (mean 59068, asc-desc gap 0.5%), median 34.6 ms, sd 0.62 ms, peak 252 MiB  gain +14.2%
+  B=64: asc 63963 / desc 63900 chars/s (mean 63931, asc-desc gap 0.1%), median 64.0 ms, sd 0.52 ms, peak 286 MiB  gain +8.2%
+
+W=125  (chars/s counts window characters only, excluding [CLS]/[SEP])
+  B= 1: asc 8817 / desc 14369 chars/s (mean 11593, asc-desc gap 47.9%), median 14.2 ms, sd 4.25 ms, peak 220 MiB
+  B= 2: asc 16804 / desc 31868 chars/s (mean 24336, asc-desc gap 61.9%), median 14.9 ms, sd 4.86 ms, peak 223 MiB  gain +109.9%
+  B= 4: asc 43735 / desc 51381 chars/s (mean 47558, asc-desc gap 16.1%), median 11.4 ms, sd 2.10 ms, peak 226 MiB  gain +95.4%
+  B= 8: asc 60415 / desc 60215 chars/s (mean 60315, asc-desc gap 0.3%), median 16.6 ms, sd 1.33 ms, peak 235 MiB  gain +26.8%
+  B=16: asc 65182 / desc 64978 chars/s (mean 65080, asc-desc gap 0.3%), median 30.7 ms, sd 0.37 ms, peak 251 MiB  gain +7.9%
+  B=32: asc 66711 / desc 66354 chars/s (mean 66532, asc-desc gap 0.5%), median 60.0 ms, sd 0.33 ms, peak 284 MiB  gain +2.2%
+  B=64: asc 66841 / desc 66625 chars/s (mean 66733, asc-desc gap 0.3%), median 119.7 ms, sd 2.57 ms, peak 350 MiB  gain +0.3%
+
+W=256  (chars/s counts window characters only, excluding [CLS]/[SEP])
+  B= 1: asc 34542 / desc 23383 chars/s (mean 28963, asc-desc gap 38.5%), median 7.4 ms, sd 1.25 ms, peak 223 MiB
+  B= 2: asc 42213 / desc 40431 chars/s (mean 41322, asc-desc gap 4.3%), median 12.1 ms, sd 1.16 ms, peak 226 MiB  gain +42.7%
+  B= 4: asc 51618 / desc 50738 chars/s (mean 51178, asc-desc gap 1.7%), median 19.8 ms, sd 0.35 ms, peak 236 MiB  gain +23.9%
+  B= 8: asc 57662 / desc 57302 chars/s (mean 57482, asc-desc gap 0.6%), median 35.5 ms, sd 0.40 ms, peak 251 MiB  gain +12.3%
+  B=16: asc 61861 / desc 61479 chars/s (mean 61670, asc-desc gap 0.6%), median 66.2 ms, sd 1.77 ms, peak 284 MiB  gain +7.3%
+  B=32: asc 61939 / desc 61630 chars/s (mean 61785, asc-desc gap 0.5%), median 132.3 ms, sd 0.25 ms, peak 351 MiB  gain +0.2%
+  B=64: asc 63306 / desc 63252 chars/s (mean 63279, asc-desc gap 0.1%), median 258.8 ms, sd 0.28 ms, peak 484 MiB  gain +2.4%
+
+W=510  (chars/s counts window characters only, excluding [CLS]/[SEP])
+  B= 1: asc 47197 / desc 44499 chars/s (mean 45848, asc-desc gap 5.9%), median 10.8 ms, sd 1.59 ms, peak 226 MiB
+  B= 2: asc 56840 / desc 56608 chars/s (mean 56724, asc-desc gap 0.4%), median 17.9 ms, sd 0.74 ms, peak 235 MiB  gain +23.7%
+  B= 4: asc 60256 / desc 60189 chars/s (mean 60222, asc-desc gap 0.1%), median 33.9 ms, sd 1.16 ms, peak 251 MiB  gain +6.2%
+  B= 8: asc 61741 / desc 61821 chars/s (mean 61781, asc-desc gap 0.1%), median 66.1 ms, sd 0.48 ms, peak 284 MiB  gain +2.6%
+  B=16: asc 62139 / desc 62142 chars/s (mean 62141, asc-desc gap 0.0%), median 131.3 ms, sd 0.34 ms, peak 350 MiB  gain +0.6%
+  B=32: asc 62496 / desc 62477 chars/s (mean 62487, asc-desc gap 0.0%), median 261.1 ms, sd 0.26 ms, peak 482 MiB  gain +0.6%
+  B=64: asc 62117 / desc 62128 chars/s (mean 62122, asc-desc gap 0.0%), median 525.5 ms, sd 0.44 ms, peak 746 MiB  gain -0.6%

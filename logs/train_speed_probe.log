@@ -1,0 +1,50 @@
+Some weights of BertForTokenClassification were not initialized from the model checkpoint at bert-base-chinese and are newly initialized: ['classifier.bias', 'classifier.weight']
+You should probably TRAIN this model on a down-stream task to be able to use it for predictions and inference.
+E:\anaconda\app\envs\yolov8\lib\site-packages\transformers\models\bert\modeling_bert.py:440: UserWarning: 1Torch was not compiled with flash attention. (Triggered internally at C:\cb\pytorch_1000000000000\work\aten\src\ATen\native\transformers\cuda\sdp_utils.cpp:555.)
+  attn_output = torch.nn.functional.scaled_dot_product_attention(
+python 3.8.20 | torch 2.4.1 | cuda 12.4 | transformers 4.46.3
+GPU NVIDIA GeForce RTX 3050 Laptop GPU | total MiB 4095 | bf16 supported True | idle: 54, 210 MHz, 2100 MHz, 3.40 W
+stream chars 600713 | label counts [550103, 27487, 13081, 7309, 984, 1158, 302, 289]
+attention implementation: sdpa
+
+== training (fwd + bwd + AdamW step, bf16 autocast, no data-loader or validation cost) ==
+train L=128 B=16: median 181.7 ms (sd 0.7), 11272 chars/s, peak 2207 MiB | 64, 1950 MHz, 2100 MHz, 73.90 W
+   -> one pass over the 7125456 training chars: 10.5 min
+train L=256 B=8: median 188.1 ms (sd 0.9), 10890 chars/s, peak 2208 MiB | 68, 1950 MHz, 2100 MHz, 76.69 W
+   -> one pass over the 7125456 training chars: 10.9 min
+train L=256 B=16: median 315.6 ms (sd 0.7), 12980 chars/s, peak 2993 MiB | 67, 1935 MHz, 2100 MHz, 72.91 W
+   -> one pass over the 7125456 training chars: 9.1 min
+train L=510 B=4: median 191.2 ms (sd 0.7), 10669 chars/s, peak 2203 MiB | 70, 1927 MHz, 2100 MHz, 76.54 W
+   -> one pass over the 7125456 training chars: 11.1 min
+train L=510 B=8: median 324.4 ms (sd 0.6), 12578 chars/s, peak 2987 MiB | 72, 1935 MHz, 2100 MHz, 77.44 W
+   -> one pass over the 7125456 training chars: 9.4 min
+
+== inference (forward only, pure bf16 weights, inference_mode) ==
+infer L=125 B=1: median 10.0 ms (sd 5.0), 12528 chars/s, peak 249 MiB | 66, 1935 MHz, 2100 MHz, 46.09 W
+infer L=125 B=2: median 5.8 ms (sd 1.0), 42932 chars/s, peak 251 MiB | 66, 1935 MHz, 2100 MHz, 25.95 W
+   -> gain over previous batch: +242.7%
+infer L=125 B=4: median 8.8 ms (sd 1.8), 56917 chars/s, peak 255 MiB | 65, 1935 MHz, 2100 MHz, 28.09 W
+   -> gain over previous batch: +32.6%
+infer L=125 B=8: median 16.4 ms (sd 0.3), 60858 chars/s, peak 263 MiB | 68, 1935 MHz, 2100 MHz, 39.09 W
+   -> gain over previous batch: +6.9%
+infer L=125 B=16: median 30.3 ms (sd 0.6), 66012 chars/s, peak 280 MiB | 71, 1875 MHz, 2100 MHz, 54.98 W
+   -> gain over previous batch: +8.5%
+infer L=125 B=32: median 59.1 ms (sd 0.2), 67681 chars/s, peak 313 MiB | 70, 1935 MHz, 2100 MHz, 67.30 W
+   -> gain over previous batch: +2.5%
+infer L=125 B=64: median 118.3 ms (sd 0.5), 67621 chars/s, peak 379 MiB | 72, 1912 MHz, 2100 MHz, 80.04 W
+   -> gain over previous batch: -0.1%
+infer L=510 B=1: median 9.9 ms (sd 1.4), 51516 chars/s, peak 255 MiB | 70, 1935 MHz, 2100 MHz, 65.96 W
+infer L=510 B=2: median 17.4 ms (sd 0.1), 58603 chars/s, peak 263 MiB | 70, 1935 MHz, 2100 MHz, 65.96 W
+   -> gain over previous batch: +13.8%
+infer L=510 B=4: median 32.9 ms (sd 0.3), 62000 chars/s, peak 280 MiB | 71, 1935 MHz, 2100 MHz, 59.42 W
+   -> gain over previous batch: +5.8%
+infer L=510 B=8: median 64.4 ms (sd 0.2), 63377 chars/s, peak 313 MiB | 70, 1935 MHz, 2100 MHz, 68.52 W
+   -> gain over previous batch: +2.2%
+infer L=510 B=16: median 128.6 ms (sd 0.8), 63429 chars/s, peak 379 MiB | 73, 1890 MHz, 2100 MHz, 79.98 W
+   -> gain over previous batch: +0.1%
+infer L=510 B=32: median 256.9 ms (sd 1.2), 63527 chars/s, peak 512 MiB | 73, 1875 MHz, 2100 MHz, 79.77 W
+   -> gain over previous batch: +0.2%
+infer L=510 B=64: median 517.9 ms (sd 1.5), 63021 chars/s, peak 778 MiB | 74, 1927 MHz, 2100 MHz, 79.41 W
+   -> gain over previous batch: -0.8%
+
+note: timings exclude tokenisation, data loading, validation and checkpoint saving.

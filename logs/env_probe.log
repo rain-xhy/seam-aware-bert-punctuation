@@ -1,0 +1,10 @@
+== nvidia-smi ==
+name, memory.total [MiB]
+NVIDIA GeForce RTX 3050 Laptop GPU, 4096 MiB
+== python ==
+Python 3.12.0
+ModuleNotFoundError: No module named 'torch'
+ModuleNotFoundError: No module named 'transformers'
+ModuleNotFoundError: No module named 'numpy'
+ModuleNotFoundError: No module named 'matplotlib'
+ModuleNotFoundError: No module named 'sklearn'

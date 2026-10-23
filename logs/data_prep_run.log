@@ -1,0 +1,5 @@
+train: articles=12128 chars=7133268
+val: articles=3223 chars=1848738
+test: articles=3280 chars=1865549
+cross-split leaked article keys: 0
+UNK fallbacks during encoding: 1798

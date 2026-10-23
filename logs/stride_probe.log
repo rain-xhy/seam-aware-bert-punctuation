@@ -1,0 +1,15 @@
+articles=18631
+[sentence 。？！] count=245693 mean=43.44 articles_with>=2=17260
+  within-article share of variance=0.7991
+  lag-1 autocorrelation (within article)=-0.0406
+  longer than overlap 12: 233286 (94.9502%)
+  longer than overlap 20: 202633 (82.4741%)
+  longer than overlap 25: 177967 (72.4347%)
+  longer than overlap 38: 116345 (47.3538%)
+[clause any pause mark] count=909123 mean=11.82 articles_with>=2=18098
+  within-article share of variance=0.7805
+  lag-1 autocorrelation (within article)=0.0029
+  longer than overlap 12: 339886 (37.3861%)
+  longer than overlap 20: 110680 (12.1744%)
+  longer than overlap 25: 54211 (5.9630%)
+  longer than overlap 38: 11460 (1.2606%)

@@ -1,0 +1,3 @@
+nonblank lines=123761
+lines with zero kept chars: 70 (body non-empty but only punctuation=70, body empty=0)
+samples: ['＊＊＊＊＊', '…………', '＊＊＊', '＊＊＊', '＊＊＊']

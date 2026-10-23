@@ -1,0 +1,51 @@
+lines=123761 total_chars=11978916
+vocab_size=21128
+coverage raw=0.98915 after_NFKC=0.98947
+lines longer than N chars (cleaned, punctuation kept): {128: 34386, 256: 8397, 510: 753}
+top OOV chars after NFKC:
+  '“' U+201C 49666
+  '”' U+201D 49619
+  '—' U+2014 14099
+  'Ａ' U+FF21 1357
+  '’' U+2019 1237
+  'Ｃ' U+FF23 942
+  'Ｄ' U+FF24 914
+  '‘' U+2018 843
+  'Ｂ' U+FF22 769
+  'Ｍ' U+FF2D 470
+  'Ｉ' U+FF29 447
+  'Ｔ' U+FF34 435
+  'Ｓ' U+FF33 430
+  'Ｖ' U+FF36 411
+  'Ｐ' U+FF30 304
+input-side (category P removed) chars=10836130 coverage after NFKC+lower=0.99984
+top input-side OOV chars after NFKC+lower:
+  '℃' U+2103 63
+  '馓' U+9993 39
+  '砀' U+7800 34
+  '殚' U+6B9A 32
+  '铱' U+94F1 29
+  '浠' U+6D60 26
+  '翥' U+7FE5 21
+  '洑' U+6D11 21
+  '藠' U+85E0 20
+  '圪' U+572A 19
+selected punctuation in vocab (raw / NFKC):
+  ， count=491341 raw_in_vocab=True nfkc_in_vocab=True
+  。 count=236914 raw_in_vocab=True nfkc_in_vocab=True
+  、 count=134222 raw_in_vocab=True nfkc_in_vocab=True
+  ； count=16328 raw_in_vocab=True nfkc_in_vocab=True
+  ： count=21547 raw_in_vocab=True nfkc_in_vocab=True
+  ？ count=5295 raw_in_vocab=True nfkc_in_vocab=True
+  ！ count=3546 raw_in_vocab=True nfkc_in_vocab=True
+  “ count=49666 raw_in_vocab=False nfkc_in_vocab=False
+  ” count=49619 raw_in_vocab=False nfkc_in_vocab=False
+  ‘ count=843 raw_in_vocab=False nfkc_in_vocab=False
+  ’ count=1237 raw_in_vocab=False nfkc_in_vocab=False
+  （ count=24157 raw_in_vocab=True nfkc_in_vocab=True
+  ） count=24149 raw_in_vocab=True nfkc_in_vocab=True
+  《 count=13008 raw_in_vocab=True nfkc_in_vocab=True
+  》 count=13008 raw_in_vocab=True nfkc_in_vocab=True
+  — count=14099 raw_in_vocab=False nfkc_in_vocab=False
+  … count=3960 raw_in_vocab=False nfkc_in_vocab=True
+  · count=6920 raw_in_vocab=True nfkc_in_vocab=True

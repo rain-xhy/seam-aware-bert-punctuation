@@ -1,0 +1,30 @@
+1998-01-2003版-带音.txt: lines=19358 replaced_bad_chars=0
+1998-02-2003版-带音.txt: lines=18847 replaced_bad_chars=0
+1998-03-2003版-带音.txt: lines=21497 replaced_bad_chars=1
+1998-04-2003版-带音.txt: lines=21495 replaced_bad_chars=1
+1998-05-2003版-带音.txt: lines=21421 replaced_bad_chars=3
+1998-06-2003版-带音.txt: lines=21143 replaced_bad_chars=0
+total U+FFFD replacement chars=5
+total lines=123761 chars(no space)=12635497 han=10462564
+line len: mean=102.1 median=77 p90=233 p99=483 max=1790
+top non-alnum chars:
+  '，' U+FF0C 491341
+  '。' U+3002 236914
+  '、' U+3001 134222
+  '{' U+007B 95087
+  '}' U+007D 95087
+  '“' U+201C 49666
+  '”' U+201D 49619
+  '（' U+FF08 24157
+  '）' U+FF09 24149
+  '：' U+FF1A 21547
+  '；' U+FF1B 16328
+  '—' U+2014 14099
+  '《' U+300A 13008
+  '》' U+300B 13008
+  '．' U+FF0E 12474
+  '〓' U+3013 10587
+  '％' U+FF05 8889
+  '·' U+00B7 6920
+  '？' U+FF1F 5295
+  '『' U+300E 4066

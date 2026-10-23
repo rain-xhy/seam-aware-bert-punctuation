@@ -36,9 +36,10 @@ ENV/
 .DS_Store
 Thumbs.db
 
-# Logs (keep directory, ignore large logs)
-logs/*.log
-!logs/.gitkeep
+# Logs: committed by default per plan §阶段4 ("所有训练日志...原样保存",
+# 报告数字须能指回这些文件). Only exclude logs explicitly too large to keep
+# in git (e.g. raw per-step dumps); name them individually here if that
+# happens, do not blanket-ignore logs/*.log.
 
 # Temporary
 *.tmp

@@ -1,0 +1,10 @@
+test articles=1888 chars=1064500
+W=128 V=0: windows=9241 short_windows=348 real_tokens=1168002 overlap_redundancy=1.0972 | util naive=0.9874 sorted(B=16)=0.9992 packed=0.9946 rows naive=9241 packed=9175
+W=128 V=20: windows=10447 short_windows=348 real_tokens=1322370 overlap_redundancy=1.2422 | util naive=0.9889 sorted(B=16)=0.9993 packed=0.9952 rows naive=10447 packed=10381
+W=128 V=64: windows=15748 short_windows=348 real_tokens=2000898 overlap_redundancy=1.8797 | util naive=0.9926 sorted(B=16)=0.9995 packed=0.9968 rows naive=15748 packed=15682
+W=256 V=0: windows=5113 short_windows=711 real_tokens=1224363 overlap_redundancy=1.1502 | util naive=0.9354 sorted(B=16)=0.9985 packed=0.9962 rows naive=5113 packed=4801
+W=256 V=20: windows=5340 short_windows=711 real_tokens=1282475 overlap_redundancy=1.2048 | util naive=0.9381 sorted(B=16)=0.9985 packed=0.9964 rows naive=5340 packed=5028
+W=256 V=64: windows=5974 short_windows=711 real_tokens=1444779 overlap_redundancy=1.3572 | util naive=0.9447 sorted(B=16)=0.9987 packed=0.9968 rows naive=5974 packed=5662
+W=510 V=0: windows=3143 short_windows=1195 real_tokens=1275554 overlap_redundancy=1.1983 | util naive=0.7958 sorted(B=16)=0.9971 packed=0.9972 rows naive=3143 packed=2508
+W=510 V=20: windows=3168 short_windows=1195 real_tokens=1288304 overlap_redundancy=1.2102 | util naive=0.7974 sorted(B=16)=0.9971 packed=0.9973 rows naive=3168 packed=2533
+W=510 V=64: windows=3251 short_windows=1195 real_tokens=1330634 overlap_redundancy=1.2500 | util naive=0.8025 sorted(B=16)=0.9972 packed=0.9974 rows naive=3251 packed=2616

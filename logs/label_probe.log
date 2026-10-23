@@ -1,0 +1,21 @@
+char positions=10836130
+  label 'O': 9927007 (91.6103%)
+  label '，': 491340 (4.5343%)
+  label '。': 236913 (2.1863%)
+  label '、': 134215 (1.2386%)
+  label '：': 21547 (0.1988%)
+  label '；': 16328 (0.1507%)
+  label '？': 5238 (0.0483%)
+  label '！': 3542 (0.0327%)
+adjacent pause-mark conflicts (dropped extra mark) = 70
+lines=123761 input-length (no punctuation): mean=87.6 median=66 p90=199 p99=410 max=1537
+  lines with > 128 chars: 29342
+  lines with > 256 chars: 6238
+  lines with > 400 chars: 1348
+  lines with > 510 chars: 471
+articles (file, date-page-article id)=18631: median=381 p90=1284 max=15365
+  articles with > 510 chars: 7062
+  articles with > 2000 chars: 597
+  articles with > 5000 chars: 62
+  articles with > 10000 chars: 10
+fullwidth full stop usage: {'between_digits': 11425, 'other': 1049}
