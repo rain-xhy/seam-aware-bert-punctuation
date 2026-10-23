@@ -126,5 +126,35 @@ def main():
     codec.save(OUT_DIR / "char_codec.json")
     print(f"\nSaved to {OUT_DIR}/")
 
+    # Compute SHA-256 hashes for data integrity
+    print("\nComputing SHA-256 hashes...")
+    import hashlib
+    import json
+
+    hashes = {}
+    files_to_hash = [
+        "char_codec.json",
+        "train_articles_char.npy",
+        "train_articles_label.npy",
+        "dev_articles_char.npy",
+        "dev_articles_label.npy",
+        "test_articles_char.npy",
+        "test_articles_label.npy",
+    ]
+
+    for filename in files_to_hash:
+        filepath = OUT_DIR / filename
+        sha256_hash = hashlib.sha256()
+        with open(filepath, "rb") as f:
+            for byte_block in iter(lambda: f.read(4096), b""):
+                sha256_hash.update(byte_block)
+        hashes[filename] = sha256_hash.hexdigest()
+        print(f"  {filename}: {sha256_hash.hexdigest()[:16]}...")
+
+    hash_file = OUT_DIR / "data_hashes.json"
+    with open(hash_file, "w", encoding="utf-8") as f:
+        json.dump(hashes, f, indent=2, ensure_ascii=False)
+    print(f"\nHashes saved to {hash_file}")
+
 if __name__ == '__main__':
     main()
