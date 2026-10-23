@@ -13,9 +13,15 @@ echo ""
 echo "1. E0: 编码器权重检查"
 python -m scripts.check_encoder_weights $CKPT
 
+# 频率基线
+echo ""
+echo "2. 频率基线实验"
+python -m scripts.run_baseline --data_dir $DATA \
+    --out results/baseline_frequency.json
+
 # E3: 窗口扫描 + EDEP
 echo ""
-echo "2. E3: 窗口/重叠/尾部扫描 + EDEP"
+echo "3. E3: 窗口/重叠/尾部扫描 + EDEP"
 python -m scripts.run_sweep --ckpt $CKPT --split dev \
     --windows 128 256 400 510 --overlaps 0 50 100 200 \
     --tails short aligned --edep --out results/E3_dev.json

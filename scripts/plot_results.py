@@ -18,9 +18,12 @@ from pathlib import Path
 try:
     import matplotlib.pyplot as plt
     import numpy as np
+    import seaborn as sns
 except ImportError:
-    print("Error: matplotlib not installed. Run: pip install matplotlib")
+    print("Error: matplotlib/seaborn not installed. Run: pip install matplotlib seaborn")
     sys.exit(1)
+
+LABEL_NAMES = ["无", "，", "。", "？", "！", "、", "；", "："]
 
 
 def plot_f1_ter_tradeoff(data: dict, out_path: Path):
@@ -158,6 +161,111 @@ def plot_batch_probe(data: dict, out_path: Path):
     print(f"  ✓ {out_path}")
 
 
+def plot_confusion_matrix(data: dict, out_path: Path, method_name: str = None):
+    """混淆矩阵热力图"""
+    confusion = None
+
+    if "confusion" in data:
+        confusion = np.array(data["confusion"])
+    elif "methods" in data and method_name:
+        confusion = np.array(data["methods"][method_name]["quality"].get("confusion"))
+
+    if confusion is None or confusion.size == 0:
+        return
+
+    # 只显示7类标点（去掉第0类"无标点"）
+    confusion_punct = confusion[1:, 1:]
+    labels = LABEL_NAMES[1:]
+
+    fig, ax = plt.subplots(figsize=(8, 7))
+    sns.heatmap(confusion_punct, annot=True, fmt='d', cmap='Blues',
+                xticklabels=labels, yticklabels=labels, ax=ax)
+    ax.set_xlabel("预测标签", fontsize=12)
+    ax.set_ylabel("真实标签", fontsize=12)
+    title = f"混淆矩阵 - {method_name}" if method_name else "混淆矩阵"
+    ax.set_title(title, fontsize=14)
+
+    plt.tight_layout()
+    plt.savefig(out_path, dpi=150, bbox_inches='tight')
+    plt.close()
+    print(f"  ✓ {out_path}")
+
+
+def plot_error_decomposition(data: dict, out_path: Path):
+    """误差分解柱状图"""
+    errors = data.get("errors")
+    if not errors:
+        return
+
+    categories = ["漏标", "误插", "类别错"]
+    values = [errors["missed"], errors["spurious"], errors["confused"]]
+    total = sum(values)
+    percentages = [v / total * 100 if total > 0 else 0 for v in values]
+
+    fig, ax = plt.subplots(figsize=(8, 6))
+    bars = ax.bar(categories, percentages, color=['#e74c3c', '#3498db', '#f39c12'], alpha=0.8)
+
+    # 添加数值标签
+    for bar, pct, val in zip(bars, percentages, values):
+        height = bar.get_height()
+        ax.text(bar.get_x() + bar.get_width()/2., height,
+                f'{pct:.1f}%\n({val})',
+                ha='center', va='bottom', fontsize=11)
+
+    ax.set_ylabel("错误占比 (%)", fontsize=12)
+    ax.set_title("误差分解", fontsize=14)
+    ax.set_ylim(0, max(percentages) * 1.2)
+    ax.grid(axis='y', alpha=0.3)
+
+    plt.tight_layout()
+    plt.savefig(out_path, dpi=150, bbox_inches='tight')
+    plt.close()
+    print(f"  ✓ {out_path}")
+
+
+def plot_methods_comparison(data: dict, out_path: Path):
+    """多方法对比柱状图（F1 / TER / 吞吐）"""
+    if "methods" not in data:
+        return
+
+    methods = data["methods"]
+    names = list(methods.keys())
+    f1s = [methods[n]["quality"]["micro_f1"] for n in names]
+    ters = [methods[n]["cost"]["ter"] for n in names]
+    throughputs = [methods[n]["cost"]["chars_per_second"] for n in names]
+
+    fig, axes = plt.subplots(1, 3, figsize=(15, 5))
+
+    # F1对比
+    axes[0].bar(range(len(names)), f1s, color='#2ecc71', alpha=0.8)
+    axes[0].set_xticks(range(len(names)))
+    axes[0].set_xticklabels(names, rotation=45, ha='right')
+    axes[0].set_ylabel("Micro F1", fontsize=12)
+    axes[0].set_title("质量对比 (F1)", fontsize=14)
+    axes[0].grid(axis='y', alpha=0.3)
+
+    # TER对比
+    axes[1].bar(range(len(names)), ters, color='#3498db', alpha=0.8)
+    axes[1].set_xticks(range(len(names)))
+    axes[1].set_xticklabels(names, rotation=45, ha='right')
+    axes[1].set_ylabel("TER", fontsize=12)
+    axes[1].set_title("代价对比 (TER)", fontsize=14)
+    axes[1].grid(axis='y', alpha=0.3)
+
+    # 吞吐对比
+    axes[2].bar(range(len(names)), throughputs, color='#e74c3c', alpha=0.8)
+    axes[2].set_xticks(range(len(names)))
+    axes[2].set_xticklabels(names, rotation=45, ha='right')
+    axes[2].set_ylabel("字符/秒", fontsize=12)
+    axes[2].set_title("效率对比 (吞吐)", fontsize=14)
+    axes[2].grid(axis='y', alpha=0.3)
+
+    plt.tight_layout()
+    plt.savefig(out_path, dpi=150, bbox_inches='tight')
+    plt.close()
+    print(f"  ✓ {out_path}")
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--results_dir", default="results")
@@ -171,12 +279,29 @@ def main():
 
     print("生成实验图表...")
 
-    # F1-TER权衡图
+    # F1-TER权衡图 & EDEP曲线
     for f in results_dir.glob("E3*.json"):
         with open(f, encoding="utf-8") as fp:
             data = json.load(fp)
         plot_f1_ter_tradeoff(data, out_dir / f"f1_ter_{f.stem}.png")
         plot_edep_curves(data, out_dir / f"edep_{f.stem}.png")
+
+    # E4方法对比
+    for f in results_dir.glob("E4*.json"):
+        with open(f, encoding="utf-8") as fp:
+            data = json.load(fp)
+        plot_methods_comparison(data, out_dir / f"methods_comparison_{f.stem}.png")
+
+        # 第一个方法的混淆矩阵
+        if "methods" in data:
+            first_method = list(data["methods"].keys())[0]
+            # 需要从完整结果中获取confusion，这里简化处理
+            if "confusion" in data.get("methods", {}).get(first_method, {}).get("quality", {}):
+                plot_confusion_matrix(data, out_dir / f"confusion_{f.stem}.png", first_method)
+
+        # 误差分解（如果有）
+        if "errors" in data:
+            plot_error_decomposition(data, out_dir / f"errors_{f.stem}.png")
 
     # Batch探测
     for f in results_dir.glob("batch_probe*.json"):

@@ -13,8 +13,13 @@ Write-Host ""
 Write-Host "1. E0: 编码器权重检查" -ForegroundColor Cyan
 & $PYTHON -X utf8 -m scripts.check_encoder_weights $CKPT
 
+# 频率基线
+Write-Host "`n2. 频率基线实验" -ForegroundColor Cyan
+& $PYTHON -X utf8 -m scripts.run_baseline --data_dir $DATA `
+    --out results/baseline_frequency.json
+
 # E3: 窗口扫描 + EDEP
-Write-Host "`n2. E3: 窗口/重叠/尾部扫描 + EDEP" -ForegroundColor Cyan
+Write-Host "`n3. E3: 窗口/重叠/尾部扫描 + EDEP" -ForegroundColor Cyan
 & $PYTHON -X utf8 -m scripts.run_sweep --ckpt $CKPT --split dev `
     --windows 128 256 400 510 --overlaps 0 50 100 200 `
     --tails short aligned --edep --out results/E3_dev.json
