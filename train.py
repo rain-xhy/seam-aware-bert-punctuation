@@ -138,7 +138,16 @@ def main():
     parser.add_argument("--seed", type=int, default=42)
     parser.add_argument("--max_len", type=int, default=510, help="Maximum sequence length for training")
     parser.add_argument("--class_weights", action='store_true', help="Use class-weighted loss (frequency inverse sqrt)")
+    parser.add_argument("--min_len", type=int, default=32,
+                        help="Minimum crop length; set equal to --max_len for a fixed-length model")
+    parser.add_argument("--edge_aware_prob", type=float, default=0.3,
+                        help="Probability that a crop gets a shortened right edge (0 disables edge-aware training)")
+    parser.add_argument("--center_only", action='store_true', help="Supervise only the centre of each crop")
+    parser.add_argument("--center_margin", type=int, default=50,
+                        help="Unsupervised chars on each side when --center_only is set")
     args = parser.parse_args()
+    if args.min_len > args.max_len:
+        parser.error("--min_len must not exceed --max_len")
     sys.stdout.reconfigure(line_buffering=True)
 
     torch.manual_seed(args.seed)
@@ -152,8 +161,13 @@ def main():
 
     # load datasets
     from punct.dataset import CropConfig
-    train_dataset = WindowDataset(args.data_dir, split="train", cfg=CropConfig(max_len=args.max_len), seed=args.seed)
-    val_dataset = WindowDataset(args.data_dir, split="dev", cfg=CropConfig(max_len=args.max_len), seed=args.seed + 1)
+    train_cfg = CropConfig(min_len=args.min_len, max_len=args.max_len, edge_aware_prob=args.edge_aware_prob,
+                           center_only_supervision=args.center_only, center_margin=args.center_margin)
+    # validation always uses plain crops (no edge shortening, full supervision) so
+    # that models trained with different switches are compared on the same signal
+    val_cfg = CropConfig(min_len=args.min_len, max_len=args.max_len, edge_aware_prob=0.0)
+    train_dataset = WindowDataset(args.data_dir, split="train", cfg=train_cfg, seed=args.seed)
+    val_dataset = WindowDataset(args.data_dir, split="dev", cfg=val_cfg, seed=args.seed + 1)
 
     # collate function needs special token IDs
     def collate_fn(batch):
@@ -173,16 +187,12 @@ def main():
     class_weight = None
     if args.class_weights:
         print("Computing class weights from training data...")
-        label_counts = np.zeros(8)
-        for article_label in train_dataset.articles_label:
-            for label in article_label:
-                if 0 <= label < 8:
-                    label_counts[label] += 1
-
-        # Inverse square root, cap at 8x
-        weights = np.sqrt(label_counts.sum() / (label_counts + 1))
+        label_counts = np.bincount(np.concatenate(list(train_dataset.articles_label)).astype(np.int64),
+                                   minlength=8).astype(np.float64)[:8]
+        # inverse square root of frequency relative to class 0 (no punctuation), capped at 8
+        weights = np.sqrt(label_counts[0] / np.maximum(label_counts, 1.0))
         weights = np.minimum(weights, 8.0)
-        weights[0] = 1.0  # Don't reweight "O" class
+        weights[0] = 1.0
         class_weight = torch.from_numpy(weights).float().to(device)
         print(f"Class weights: {weights}")
 
@@ -198,6 +208,7 @@ def main():
 
     best_val_f1 = 0.0
     best_checkpoint = None
+    history = {"args": vars(args), "epochs": []}
     for epoch in range(args.epochs):
         t0 = time.time()
         train_loss = train_one_epoch(
@@ -208,6 +219,10 @@ def main():
         print(f"Epoch {epoch+1}/{args.epochs} | train_loss={train_loss:.4f} | val_loss={val_loss:.4f} | time={elapsed:.1f}s")
         print(f"  Val micro-F1={val_metrics['micro_f1']:.4f} | macro-F1={val_metrics['macro_f1']:.4f}", flush=True)
         torch.save(model.state_dict(), os.path.join(args.out_dir, "last.pt"))
+        history["epochs"].append({"epoch": epoch + 1, "train_loss": train_loss, "val_loss": val_loss,
+                                  "seconds": elapsed, **{k: float(v) for k, v in val_metrics.items()}})
+        with open(os.path.join(args.out_dir, "history.json"), "w", encoding="utf-8") as fh:
+            json.dump(history, fh, ensure_ascii=False, indent=2)
         if val_metrics["micro_f1"] > best_val_f1:
             best_val_f1 = val_metrics["micro_f1"]
             best_checkpoint = os.path.join(args.out_dir, "best.pt")
