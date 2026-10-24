@@ -36,15 +36,35 @@ from punct.dataset import WindowDataset, collate_windows
 from punct.metrics import compute_metrics
 
 
+def save_state_atomic(path, state):
+    """Write to a temp file, then rename, so a crash while writing never
+    destroys the previous good state."""
+    tmp = path + ".tmp"
+    torch.save(state, tmp)
+    os.replace(tmp, path)
+
+
+def epoch_order(n_items, seed, epoch):
+    """Shuffled sample order of one epoch, reproducible from (seed, epoch) so a
+    resumed run can continue the same epoch from the middle."""
+    g = torch.Generator()
+    g.manual_seed(seed * 1000 + epoch)
+    return torch.randperm(n_items, generator=g).tolist()
+
+
 def train_one_epoch(model, dataloader, optimizer, scheduler, scaler, device, grad_accum_steps, grad_clip,
-                    class_weight=None, log_every=2000):
+                    class_weight=None, log_every=2000, start_batch=0, n_total=None, total_loss=0.0,
+                    save_every=0, on_save=None):
+    """start_batch: micro-batches of this epoch already done (resume). The
+    dataloader must yield only the remaining ones. on_save(done, total_loss) is
+    called every `save_every` micro-batches, only right after an optimizer step."""
     model.train()
-    total_loss = 0.0
     window_loss = 0.0
     t_start = time.time()
-    n_batches = len(dataloader)
+    n_batches = n_total if n_total is not None else len(dataloader)
     optimizer.zero_grad()
-    for i, batch in enumerate(dataloader):
+    for j, batch in enumerate(dataloader):
+        i = start_batch + j
         input_ids = batch["input_ids"].to(device)
         attention_mask = batch["attention_mask"].to(device)
         labels = batch["labels"].to(device)
@@ -57,7 +77,8 @@ def train_one_epoch(model, dataloader, optimizer, scheduler, scaler, device, gra
                                    ignore_index=-100, weight=class_weight)
             loss = loss / grad_accum_steps
         scaler.scale(loss).backward()
-        if (i + 1) % grad_accum_steps == 0:
+        stepped = (i + 1) % grad_accum_steps == 0
+        if stepped:
             scaler.unscale_(optimizer)
             torch.nn.utils.clip_grad_norm_(model.parameters(), grad_clip)
             scaler.step(optimizer)
@@ -69,11 +90,13 @@ def train_one_epoch(model, dataloader, optimizer, scheduler, scaler, device, gra
         window_loss += step_loss
         if (i + 1) % log_every == 0:
             elapsed = time.time() - t_start
-            eta = elapsed / (i + 1) * (n_batches - i - 1)
+            eta = elapsed / (j + 1) * (n_batches - i - 1)
             print(f"  step {i+1}/{n_batches} | loss(last {log_every})={window_loss/log_every:.4f} "
                   f"| elapsed={elapsed/60:.1f}min | epoch_eta={eta/60:.1f}min", flush=True)
             window_loss = 0.0
-    return total_loss / len(dataloader)
+        if save_every and on_save is not None and stepped and (i + 1) % save_every == 0 and i + 1 < n_batches:
+            on_save(i + 1, total_loss)
+    return total_loss / n_batches
 
 
 def validate(model, dataloader, device):
@@ -145,6 +168,10 @@ def main():
     parser.add_argument("--center_only", action='store_true', help="Supervise only the centre of each crop")
     parser.add_argument("--center_margin", type=int, default=50,
                         help="Unsupervised chars on each side when --center_only is set")
+    parser.add_argument("--save_every", type=int, default=4000,
+                        help="Save a full resumable state every N micro-batches (0 disables)")
+    parser.add_argument("--no_resume", action='store_true',
+                        help="Ignore an existing resume.pt in --out_dir and start from scratch")
     args = parser.parse_args()
     if args.min_len > args.max_len:
         parser.error("--min_len must not exceed --max_len")
@@ -173,9 +200,17 @@ def main():
     def collate_fn(batch):
         return collate_windows(batch, codec.cls_id, codec.sep_id, codec.pad_id)
 
-    train_loader = torch.utils.data.DataLoader(
-        train_dataset, batch_size=args.batch_size, shuffle=True, collate_fn=collate_fn, num_workers=0
-    )
+    n_train = len(train_dataset)
+    batches_per_epoch = (n_train + args.batch_size - 1) // args.batch_size
+
+    def make_train_loader(epoch, start_batch):
+        """Loader over the not-yet-seen part of this epoch's reproducible order."""
+        order = epoch_order(n_train, args.seed, epoch)[start_batch * args.batch_size:]
+        train_dataset.rng = __import__("random").Random(args.seed * 7919 + epoch * 104729 + start_batch)
+        return torch.utils.data.DataLoader(
+            torch.utils.data.Subset(train_dataset, order), batch_size=args.batch_size, shuffle=False,
+            collate_fn=collate_fn, num_workers=0)
+
     val_loader = torch.utils.data.DataLoader(
         val_dataset, batch_size=args.batch_size, shuffle=False, collate_fn=collate_fn, num_workers=0
     )
@@ -198,22 +233,49 @@ def main():
 
     # optimizer, scheduler, scaler
     optimizer = torch.optim.AdamW(model.parameters(), lr=args.lr, weight_decay=args.weight_decay)
-    total_steps = len(train_loader) // args.grad_accum * args.epochs
+    total_steps = batches_per_epoch // args.grad_accum * args.epochs
     warmup_steps = int(total_steps * args.warmup_ratio)
     scheduler = get_linear_schedule_with_warmup(optimizer, warmup_steps, total_steps)
     scaler = torch.amp.GradScaler("cuda")
 
-    print(f"Training {args.epochs} epochs, {len(train_loader)} batches/epoch, grad_accum={args.grad_accum}")
+    print(f"Training {args.epochs} epochs, {batches_per_epoch} batches/epoch, grad_accum={args.grad_accum}")
     print(f"Total steps={total_steps}, warmup={warmup_steps}, device={device}")
 
     best_val_f1 = 0.0
     best_checkpoint = None
     history = {"args": vars(args), "epochs": []}
-    for epoch in range(args.epochs):
+    resume_path = os.path.join(args.out_dir, "resume.pt")
+    start_epoch, start_batch, carried_loss = 0, 0, 0.0
+    if os.path.exists(resume_path) and not args.no_resume:
+        st = torch.load(resume_path, map_location="cpu")
+        model.load_state_dict(st["model"])
+        optimizer.load_state_dict(st["optimizer"])
+        scheduler.load_state_dict(st["scheduler"])
+        scaler.load_state_dict(st["scaler"])
+        start_epoch, start_batch, carried_loss = st["epoch"], st["batch"], st["epoch_loss"]
+        best_val_f1, history = st["best_val_f1"], st["history"]
+        if os.path.exists(os.path.join(args.out_dir, "best.pt")):
+            best_checkpoint = os.path.join(args.out_dir, "best.pt")
+        print(f"RESUMED from {resume_path}: epoch {start_epoch + 1}, micro-batch {start_batch}", flush=True)
+        del st
+
+    for epoch in range(start_epoch, args.epochs):
         t0 = time.time()
+        sb = start_batch if epoch == start_epoch else 0
+
+        def on_save(done, loss_so_far, _epoch=epoch):
+            save_state_atomic(resume_path, {
+                "model": model.state_dict(), "optimizer": optimizer.state_dict(),
+                "scheduler": scheduler.state_dict(), "scaler": scaler.state_dict(),
+                "epoch": _epoch, "batch": done, "epoch_loss": loss_so_far,
+                "best_val_f1": best_val_f1, "history": history})
+            print(f"  [state saved at epoch {_epoch + 1}, micro-batch {done}]", flush=True)
+
         train_loss = train_one_epoch(
-            model, train_loader, optimizer, scheduler, scaler, device, args.grad_accum, args.grad_clip, class_weight
-        )
+            model, make_train_loader(epoch, sb), optimizer, scheduler, scaler, device, args.grad_accum,
+            args.grad_clip, class_weight, start_batch=sb, n_total=batches_per_epoch,
+            total_loss=carried_loss if epoch == start_epoch else 0.0,
+            save_every=args.save_every, on_save=on_save)
         val_loss, val_metrics = validate(model, val_loader, device)
         elapsed = time.time() - t0
         print(f"Epoch {epoch+1}/{args.epochs} | train_loss={train_loss:.4f} | val_loss={val_loss:.4f} | time={elapsed:.1f}s")
@@ -229,6 +291,8 @@ def main():
             torch.save(model.state_dict(), best_checkpoint)
             print(f"  ✓ Saved best checkpoint to {best_checkpoint}")
 
+    if os.path.exists(resume_path):
+        os.remove(resume_path)  # run completed; a stale state must not be resumed later
     print(f"\nTraining finished. Best val micro-F1={best_val_f1:.4f}, checkpoint={best_checkpoint}")
 
 
