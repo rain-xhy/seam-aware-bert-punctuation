@@ -160,3 +160,21 @@ class TestCollateBatch(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class TestShortArticleFallback(unittest.TestCase):
+    def test_fixed_length_skips_short_articles(self):
+        import tempfile, os
+        import numpy as np
+        from punct.dataset import CropConfig, WindowDataset
+        with tempfile.TemporaryDirectory() as d:
+            chars = np.empty(4, dtype=object)
+            labs = np.empty(4, dtype=object)
+            for i, n in enumerate((40, 50, 60, 300)):
+                chars[i] = np.arange(n, dtype=np.int32) + 200
+                labs[i] = np.zeros(n, dtype=np.int32)
+            np.save(os.path.join(d, "train_articles_char.npy"), chars, allow_pickle=True)
+            np.save(os.path.join(d, "train_articles_label.npy"), labs, allow_pickle=True)
+            ds = WindowDataset(d, "train", CropConfig(min_len=256, max_len=256, edge_aware_prob=0.0))
+            for idx in range(len(ds)):
+                self.assertEqual(len(ds[idx].char_ids), 256)

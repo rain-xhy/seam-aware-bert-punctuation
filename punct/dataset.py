@@ -128,25 +128,14 @@ class WindowDataset:
         return len(self.articles_char) * 10  # 10 crops per article per epoch
 
     def __getitem__(self, idx):
-        article_idx = idx % len(self.articles_char)
-        crop = pick_crop(
-            self.articles_char[article_idx],
-            self.articles_label[article_idx],
-            article_idx,
-            self.cfg,
-            self.rng
-        )
-        if crop is None:
-            # Article too short, try next one
-            article_idx = (article_idx + 1) % len(self.articles_char)
-            crop = pick_crop(
-                self.articles_char[article_idx],
-                self.articles_label[article_idx],
-                article_idx,
-                self.cfg,
-                self.rng
-            )
-        return crop
+        n = len(self.articles_char)
+        for k in range(n):
+            article_idx = (idx + k) % n
+            crop = pick_crop(self.articles_char[article_idx], self.articles_label[article_idx],
+                             article_idx, self.cfg, self.rng)
+            if crop is not None:
+                return crop
+        raise ValueError(f"no article is at least min_len={self.cfg.min_len} characters long")
 
     def set_epoch(self, epoch: int):
         """Re-seed RNG for each epoch to get different crops."""
