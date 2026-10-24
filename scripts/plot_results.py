@@ -23,7 +23,7 @@ except ImportError:
     print("Error: matplotlib/seaborn not installed. Run: pip install matplotlib seaborn")
     sys.exit(1)
 
-LABEL_NAMES = ["无", "，", "。", "？", "！", "、", "；", "："]
+LABEL_NAMES = ["无", "，", "。", "？", "！", "；", "：", "、"]  # same order as prepare_complete_data.LABELS
 
 
 def plot_f1_ter_tradeoff(data: dict, out_path: Path):
@@ -266,6 +266,32 @@ def plot_methods_comparison(data: dict, out_path: Path):
     print(f"  ✓ {out_path}")
 
 
+def plot_reliability(data: dict, out_path: Path):
+    """Reliability diagram before/after temperature scaling (E7 calibration block)."""
+    cal = data.get("calibration")
+    if not cal or not isinstance(cal.get("ece_before"), dict):
+        return
+    fig, axes = plt.subplots(1, 2, figsize=(10, 4.5), sharey=True)
+    for ax, key, title in ((axes[0], "ece_before", "before"), (axes[1], "ece_after", "after")):
+        e = cal[key]
+        min_count = max(1, int(0.001 * e["n"]))  # bins under 0.1% of samples are too noisy to plot
+        bins = [b for b in e["bins"] if b["count"] >= min_count]
+        dropped = sum(1 for b in e["bins"] if 0 < b["count"] < min_count)
+        ax.plot([0, 1], [0, 1], "k--", linewidth=1)
+        ax.plot([b["confidence"] for b in bins], [b["accuracy"] for b in bins], "o-")
+        for b in bins:
+            ax.annotate(str(b["count"]), (b["confidence"], b["accuracy"]), textcoords="offset points",
+                        xytext=(4, -10), fontsize=6)
+        ax.set_title(f"{title} calibration, ECE={e['ece']:.4f}"
+                     + (f"\n({dropped} sparse bin(s) hidden)" if dropped else ""), fontsize=10)
+        ax.set_xlabel("confidence")
+    axes[0].set_ylabel("accuracy")
+    plt.tight_layout()
+    plt.savefig(out_path, dpi=150, bbox_inches="tight")
+    plt.close()
+    print(f"  ✓ {out_path}")
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--results_dir", default="results")
@@ -285,6 +311,11 @@ def main():
             data = json.load(fp)
         plot_f1_ter_tradeoff(data, out_dir / f"f1_ter_{f.stem}.png")
         plot_edep_curves(data, out_dir / f"edep_{f.stem}.png")
+
+    # E7 校准可靠度图
+    for f in results_dir.glob("E7*.json"):
+        with open(f, encoding="utf-8") as fp:
+            plot_reliability(json.load(fp), out_dir / f"reliability_{f.stem}.png")
 
     # E4方法对比
     for f in results_dir.glob("E4*.json"):
