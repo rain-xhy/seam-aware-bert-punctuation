@@ -157,6 +157,7 @@ def decode_two_pass(
     profile: str = "hard", batch_size: int = 8, seam_margin: int = 16, conf_thr: float = 0.9,
     patch_window: int = 400, edge_margin: int = 128, anchor_range: int = 16, select: str = "confidence",
     rng: Optional[np.random.Generator] = None, budget: Optional[int] = None, patch: bool = True,
+    calibration: Optional[Tuple[float, np.ndarray]] = None,
 ):
     """-> (labels per article, info dict). `select='random'` draws `budget`
     random positions (the equal-budget control); `patch=False` returns pass 1."""
@@ -172,7 +173,11 @@ def decode_two_pass(
         return labels, info
     pooled = pool_windows(lengths, window, overlap, tail)
     masks = seam_candidates(pooled, lengths, seam_margin)
-    sel = select_positions(probs, masks, conf_thr, select, rng, budget)
+    sel_probs = probs
+    if calibration is not None:  # calibration only changes which positions are chosen, never pass-1 labels
+        from punct.calibrate import calibrate_probs
+        sel_probs = [calibrate_probs(p, calibration[0], calibration[1]) for p in probs]
+    sel = select_positions(sel_probs, masks, conf_thr, select, rng, budget)
     info["n_selected"] = int(sum(len(v) for v in sel.values()))
     patches = plan_patches(sel, lengths, labels, patch_window, edge_margin, anchor_range)
     info["n_patch_windows"] = len(patches)
