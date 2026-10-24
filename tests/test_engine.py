@@ -97,6 +97,25 @@ class EngineTests(unittest.TestCase):
         for a, l in zip(self.articles, labels):
             np.testing.assert_array_equal(l, expected(a))
 
+    def test_prefetch_and_pin_match_plain_path(self):
+        base, _ = run(self.articles, window=60, overlap=20, batch_size=3)
+        pre, _ = run(self.articles, window=60, overlap=20, batch_size=3, prefetch=True)
+        pin, _ = run(self.articles, window=60, overlap=20, batch_size=3, prefetch=True, pin_memory=True)
+        for x, y, z in zip(base, pre, pin):
+            np.testing.assert_array_equal(x, y)
+            np.testing.assert_array_equal(x, z)
+
+    def test_prefetch_survives_oom_halving(self):
+        def flaky(ids, mask):
+            if ids.shape[0] > 2:
+                raise torch.OutOfMemoryError("fake")
+            return fake_logits_fn(ids, mask)
+        art = [list(range(200, 900))]
+        labels, stats = decode_parallel(art, flaky, CLS, SEP, PAD, DEV, window=50, overlap=10,
+                                        batch_size=8, prefetch=True)
+        np.testing.assert_array_equal(labels[0], expected(art[0]))
+        self.assertEqual(stats.batch_size_used, 2)
+
     def test_pool_windows_cover(self):
         pw = pool_windows([0, 5, 250], 100, 20, "short")
         self.assertEqual(sum(1 for w in pw if w.article == 0), 0)

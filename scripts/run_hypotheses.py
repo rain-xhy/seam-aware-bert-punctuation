@@ -50,9 +50,9 @@ def main() -> None:
     ap.add_argument("--split", default="dev")
     ap.add_argument("--skip", type=int, default=0, help="articles skipped at the start (calibration part)")
     ap.add_argument("--limit", type=int, default=0)
-    ap.add_argument("--serial_npz", required=True)
+    ap.add_argument("--serial_npz", default="", help="omit to skip H1 (needs E4 predictions)")
     ap.add_argument("--serial_name", default="serial_teacher")
-    ap.add_argument("--b_npz", required=True)
+    ap.add_argument("--b_npz", default="")
     ap.add_argument("--b_name", default="parallel")
     ap.add_argument("--e7_npz", required=True)
     ap.add_argument("--delta", type=float, default=0.002)
@@ -77,13 +77,16 @@ def main() -> None:
                              "(check --skip/--limit match the run that wrote it)")
         return split_by_article(flat, lengths)
 
-    serial = load(args.serial_npz, args.serial_name)
-    b = load(args.b_npz, args.b_name)
     e7 = {k: load(args.e7_npz, k) for k in ("pass1", "c_calibrated", "c_random", "b_same_ter")}
 
     res = {"delta": args.delta, "n_articles": len(gold), "n_boot": args.n_boot, "hypotheses": {}}
     # H1: non-inferiority of B vs serial  (diff = B - serial, lower bound >= -delta)
-    res["hypotheses"]["H1_B_noninferior_to_serial"] = compare(gold, serial, b, args.delta, args.n_boot, args.seed)
+    if args.serial_npz and args.b_npz:
+        serial = load(args.serial_npz, args.serial_name)
+        b = load(args.b_npz, args.b_name)
+        res["hypotheses"]["H1_B_noninferior_to_serial"] = compare(gold, serial, b, args.delta, args.n_boot, args.seed)
+    else:
+        res["H1_skipped"] = "no serial/B prediction files given"
     # H2: C better than B at equal TER      (diff = C - B_same_TER, lower bound > 0)
     res["hypotheses"]["H2_C_better_than_B_same_TER"] = compare(
         gold, e7["b_same_ter"], e7["c_calibrated"], args.delta, args.n_boot, args.seed)

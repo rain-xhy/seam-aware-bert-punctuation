@@ -18,10 +18,12 @@ def confusion_matrix(gold: np.ndarray, pred: np.ndarray, num_labels: int) -> np.
     """rows = gold label, cols = predicted label."""
     if gold.shape != pred.shape:
         raise ValueError(f"shape mismatch: gold={gold.shape} pred={pred.shape}")
-    cm = np.zeros((num_labels, num_labels), dtype=np.int64)
-    for g, p in zip(gold, pred):
-        cm[g, p] += 1
-    return cm
+    g = np.asarray(gold, dtype=np.int64).ravel()
+    p = np.asarray(pred, dtype=np.int64).ravel()
+    if g.size and (g.min() < 0 or p.min() < 0 or g.max() >= num_labels or p.max() >= num_labels):
+        raise ValueError("label id outside [0, num_labels)")
+    flat = np.bincount(g * num_labels + p, minlength=num_labels * num_labels)
+    return flat.reshape(num_labels, num_labels).astype(np.int64)
 
 
 def punctuation_prf(gold: np.ndarray, pred: np.ndarray, num_labels: int, none_label: int = 0) -> Dict:
