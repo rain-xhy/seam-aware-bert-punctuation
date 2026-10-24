@@ -26,8 +26,10 @@ python prepare_complete_data.py
 ## 训练
 
 ```bash
-python -m scripts.run_train --data_dir prepared_data_complete \
-    --out_dir checkpoints/T1_varlen --epochs 3 --batch_size 64
+python train.py --data_dir prepared_data_complete --bert_dir bert-base-chinese \
+    --out_dir checkpoints/T1_varlen --epochs 3 --batch_size 1 --grad_accum 8 \
+    --max_len 400 --seed 42 --save_every 4000
+# 中断后用同一条命令重启，会从 resume.pt 续训；对照模型的开关见 run_controls3.sh
 ```
 
 ## 实验

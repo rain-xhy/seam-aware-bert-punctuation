@@ -80,8 +80,8 @@ scipy>=1.9.0
 
 3. **训练**:
    ```bash
-   python -m scripts.run_train --data_dir prepared_data_complete \
-       --out_dir checkpoints/T1_varlen --epochs 3
+   python train.py --data_dir prepared_data_complete --bert_dir bert-base-chinese \
+       --out_dir checkpoints/T1_varlen --epochs 3 --batch_size 1 --grad_accum 8 --max_len 400
    ```
 
 4. **实验**:
