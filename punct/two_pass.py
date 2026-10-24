@@ -108,7 +108,14 @@ def plan_patches(positions: Dict[int, np.ndarray], lengths: Sequence[int], label
                 s, e = 0, n
             else:
                 s = max(0, min(q - edge_margin, n - patch_window))
-                s = _anchor_start(s, labels[a], anchor_range) if s > 0 else 0
+                if s > 0:
+                    s_anchored = _anchor_start(s, labels[a], anchor_range)
+                    e_anchored = min(s_anchored + patch_window, n)
+                    hi_anchored = e_anchored if e_anchored == n else e_anchored - edge_margin
+                    # anchoring shifts the window left; near the article end that
+                    # would pull its right edge in front of q, so skip it there
+                    if q < hi_anchored:
+                        s = s_anchored
                 e = min(s + patch_window, n)
             lo = s if s == 0 else s + edge_margin
             hi = e if e == n else e - edge_margin

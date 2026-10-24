@@ -64,6 +64,18 @@ class TwoPassTests(unittest.TestCase):
             seen += p.positions
         self.assertEqual(sorted(seen), [5, 6, 399, 400, 1200, 2995])
 
+    def test_anchoring_near_article_end_still_covers_position(self):
+        # regression: a sentence mark just left of the last window start made the
+        # anchored window end before the selected position (random control crash)
+        n = 3000
+        lab = np.zeros(n, dtype=np.int64)
+        lab[n - 405] = 2
+        pos = {0: np.array([n - 10])}
+        patches = plan_patches(pos, [n], [lab], patch_window=400, edge_margin=128, anchor_range=16)
+        self.assertEqual(sum(len(p.positions) for p in patches), 1)
+        p = patches[0]
+        self.assertTrue(p.start <= n - 10 < p.end)
+
     def test_short_article_uses_whole_article(self):
         patches = plan_patches({0: np.array([10, 20])}, [50], [np.zeros(50, dtype=np.int64)])
         self.assertEqual((patches[0].start, patches[0].end), (0, 50))
