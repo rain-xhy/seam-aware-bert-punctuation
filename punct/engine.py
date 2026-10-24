@@ -76,7 +76,7 @@ def pool_windows(lengths: Sequence[int], window: int, overlap: int, tail: str) -
 
 
 def edge_weights(length: int, at_article_start: bool, at_article_end: bool, mask_left: int, mask_right: int,
-                 profile: str = "hard") -> np.ndarray:
+                 profile: str = "hard", edep=None, edep_floor: float = 0.1) -> np.ndarray:
     """Per-position merge weight for one window. 'hard': 1 inside, 0 within
     mask_left/mask_right of an internal edge (article start/end exempt).
     'gauss': Gaussian centred on the window, never exactly zero, edges at an
@@ -98,6 +98,24 @@ def edge_weights(length: int, at_article_start: bool, at_article_end: bool, mask
         if at_article_end:
             w[int(centre):] = np.maximum(w[int(centre):], w[int(centre)])
         return w
+    if profile == "edep":
+        # empirical weight: 1 - error rate at this distance from the window
+        # edge (EDEP-L from the left, EDEP-R from the right), the worse of the
+        # two sides, floored so no position is fully masked. Edges that sit on
+        # the article's true start/end are not seams and keep weight 1.
+        if edep is None:
+            raise ValueError("profile='edep' needs edep=(left_rates, right_rates)")
+        left_err, right_err = (np.asarray(e, dtype=np.float32) for e in edep)
+        err = np.zeros(length, dtype=np.float32)
+        d = np.arange(length)
+        if not at_article_start:
+            inside = d < len(left_err)
+            err[inside] = np.maximum(err[inside], left_err[d[inside]])
+        if not at_article_end:
+            dr = length - 1 - d
+            inside = dr < len(right_err)
+            err[inside] = np.maximum(err[inside], right_err[dr[inside]])
+        return np.maximum(1.0 - err, edep_floor).astype(np.float32)
     raise ValueError(f"unknown profile {profile!r}")
 
 
@@ -123,6 +141,7 @@ def decode_parallel(
     device: torch.device, window: int, overlap: int, tail: str = "short",
     mask_left: int = 0, mask_right: int = 0, profile: str = "hard", batch_size: int = 16,
     num_labels: int = 8, return_probs: bool = False, windows: Optional[List[PooledWindow]] = None,
+    edep=None,
 ):
     """Parallel sliding-window decoding of many articles at once.
     Returns (labels per article, DecodeStats[, probs per article])."""
@@ -169,7 +188,7 @@ def decode_parallel(
             rows.append(probs[b, 1:1 + n])
             base = int(offsets[w.article]) + w.start
             idxs.append(torch.arange(base, base + n, device=device))
-            wv = edge_weights(n, w.start == 0, w.end == lengths[w.article], mask_left, mask_right, profile)
+            wv = edge_weights(n, w.start == 0, w.end == lengths[w.article], mask_left, mask_right, profile, edep)
             wts.append(torch.from_numpy(wv).to(device))
         rows_t = torch.cat(rows)
         idx_t = torch.cat(idxs)

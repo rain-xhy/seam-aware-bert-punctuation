@@ -81,6 +81,22 @@ class EngineTests(unittest.TestCase):
         self.assertGreaterEqual(stats.n_oom_retries, 2)
         self.assertEqual(stats.batch_size_used, 2)
 
+    def test_edep_profile_weights_and_decode(self):
+        left, right = [0.5, 0.2, 0.0], [0.9, 0.0]
+        w = edge_weights(10, False, False, 0, 0, profile="edep", edep=(left, right))
+        self.assertAlmostEqual(float(w[0]), 0.5, places=5)   # left err 0.5, outside the right curve -> 1-0.5
+        self.assertAlmostEqual(float(w[1]), 0.8, places=5)   # left err 0.2
+        self.assertAlmostEqual(float(w[8]), 1.0, places=5)   # right err 0.0
+        self.assertAlmostEqual(float(w[9]), 0.1, places=5)   # right err 0.9 -> 1-0.9=0.1 (the floor)
+        self.assertAlmostEqual(float(w[5]), 1.0, places=5)
+        w2 = edge_weights(10, True, True, 0, 0, profile="edep", edep=(left, right))
+        self.assertTrue((w2 == 1).all())
+        with self.assertRaises(ValueError):
+            edge_weights(10, False, False, 0, 0, profile="edep")
+        labels, _ = run(self.articles, window=50, overlap=20, profile="edep", edep=(left, right), batch_size=4)
+        for a, l in zip(self.articles, labels):
+            np.testing.assert_array_equal(l, expected(a))
+
     def test_pool_windows_cover(self):
         pw = pool_windows([0, 5, 250], 100, 20, "short")
         self.assertEqual(sum(1 for w in pw if w.article == 0), 0)

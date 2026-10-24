@@ -85,8 +85,9 @@ def main() -> None:
     configs = [
         ("hard", dict(profile="hard", mask_left=edep_result['m_l'], mask_right=edep_result['m_r'])),
         ("gauss", dict(profile="gauss", mask_left=0, mask_right=0)),
-        # EDEP-weighted暂时用hard+自适应掩码模拟
-        ("edep_hard", dict(profile="hard", mask_left=edep_result['m_l'], mask_right=edep_result['m_r'])),
+        # 经验权重: 1 - EDEP错误率, 直接走engine的"edep"权重
+        ("edep", dict(profile="edep", mask_left=0, mask_right=0,
+                      edep=(edep_result["left"], edep_result["right"]))),
     ]
 
     result = {
@@ -103,7 +104,7 @@ def main() -> None:
                                 **kw)
         q = score(gold, pred)
         result["methods"][name] = {
-            "config": kw,
+            "config": {k: v for k, v in kw.items() if k != "edep"},
             "quality": {"micro_f1": q["micro_f1"], "macro_f1": q["macro_f1"]},
             "cost": {"ter": stats["ter"], "seconds": stats["seconds"]},
         }
