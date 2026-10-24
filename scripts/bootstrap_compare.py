@@ -63,14 +63,14 @@ def main() -> None:
 
     print(f"=== Bootstrap比较: {args.method_a} vs {args.method_b} ===\n")
     print(f"{args.method_a}:")
-    print(f"  均值F1: {f1_a.mean():.4f}")
+    print(f"  逐篇F1均值: {f1_a.mean():.4f} / 总体bootstrap均值: {ci_a['mean']:.4f}")
     print(f"  {int(args.confidence*100)}% CI: [{ci_a['ci_lower']:.4f}, {ci_a['ci_upper']:.4f}]")
-    print(f"  标准误: {ci_a['std_error']:.4f}\n")
+    print(f"  标准误: {ci_a['std']:.4f}\n")
 
     print(f"{args.method_b}:")
-    print(f"  均值F1: {f1_b.mean():.4f}")
+    print(f"  逐篇F1均值: {f1_b.mean():.4f} / 总体bootstrap均值: {ci_b['mean']:.4f}")
     print(f"  {int(args.confidence*100)}% CI: [{ci_b['ci_lower']:.4f}, {ci_b['ci_upper']:.4f}]")
-    print(f"  标准误: {ci_b['std_error']:.4f}\n")
+    print(f"  标准误: {ci_b['std']:.4f}\n")
 
     print(f"配对检验:")
     print(f"  差值: {test_result['delta']:.4f}")
