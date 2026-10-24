@@ -12,6 +12,7 @@ and run with the real BERT.
 from __future__ import annotations
 
 import time
+from concurrent.futures import ThreadPoolExecutor
 from dataclasses import dataclass, field
 from typing import Callable, Dict, List, Optional, Sequence
 
@@ -119,9 +120,9 @@ def edge_weights(length: int, at_article_start: bool, at_article_end: bool, mask
     raise ValueError(f"unknown profile {profile!r}")
 
 
-def _run_batch(logits_fn: LogitsFn, chunks: List[Sequence[int]], cls_id: int, sep_id: int, pad_id: int,
-               device: torch.device) -> torch.Tensor:
-    """-> probs [B, Lmax, C] (positions 1..len of each row are the chars)."""
+def _encode_batch(chunks: List[Sequence[int]], cls_id: int, sep_id: int, pad_id: int, pin: bool = False):
+    """CPU-side encoding of one batch -> (ids, mask) int64 tensors, optionally
+    in page-locked memory so the host-to-device copy can be asynchronous."""
     max_len = max(len(c) for c in chunks) + 2
     ids = np.full((len(chunks), max_len), pad_id, dtype=np.int64)
     mask = np.zeros((len(chunks), max_len), dtype=np.int64)
@@ -131,9 +132,22 @@ def _run_batch(logits_fn: LogitsFn, chunks: List[Sequence[int]], cls_id: int, se
         ids[i, 1:1 + n] = c
         ids[i, 1 + n] = sep_id
         mask[i, : n + 2] = 1
-    ids_t = torch.from_numpy(ids).to(device, non_blocking=True)
-    mask_t = torch.from_numpy(mask).to(device, non_blocking=True)
-    return torch.softmax(logits_fn(ids_t, mask_t), dim=-1)
+    ids_t, mask_t = torch.from_numpy(ids), torch.from_numpy(mask)
+    if pin:
+        ids_t, mask_t = ids_t.pin_memory(), mask_t.pin_memory()
+    return ids_t, mask_t
+
+
+def _forward_encoded(logits_fn: LogitsFn, encoded, device: torch.device) -> torch.Tensor:
+    ids_t, mask_t = encoded
+    return torch.softmax(logits_fn(ids_t.to(device, non_blocking=True), mask_t.to(device, non_blocking=True)), dim=-1)
+
+
+def _run_batch(logits_fn: LogitsFn, chunks: List[Sequence[int]], cls_id: int, sep_id: int, pad_id: int,
+               device: torch.device, pin: bool = False) -> torch.Tensor:
+    """-> probs [B, Lmax, C] (positions 1..len of each row are the chars)."""
+    enc = _encode_batch(chunks, cls_id, sep_id, pad_id, pin=pin and device.type == "cuda")
+    return _forward_encoded(logits_fn, enc, device)
 
 
 def decode_parallel(
@@ -141,9 +155,11 @@ def decode_parallel(
     device: torch.device, window: int, overlap: int, tail: str = "short",
     mask_left: int = 0, mask_right: int = 0, profile: str = "hard", batch_size: int = 16,
     num_labels: int = 8, return_probs: bool = False, windows: Optional[List[PooledWindow]] = None,
-    edep=None,
+    edep=None, pin_memory: bool = False, prefetch: bool = False,
 ):
     """Parallel sliding-window decoding of many articles at once.
+    pin_memory: page-locked host buffers + async copy. prefetch: a worker thread
+    encodes batch k+1 on the CPU while the GPU runs batch k.
     Returns (labels per article, DecodeStats[, probs per article])."""
     t_all = time.perf_counter()
     lengths = [len(a) for a in articles]
@@ -161,14 +177,29 @@ def decode_parallel(
 
     bs = batch_size
     i = 0
+    pin = pin_memory and device.type == "cuda"
+    pending = None  # (start index, batch size, Future) of the batch encoded ahead of time
+    executor = ThreadPoolExecutor(max_workers=1) if prefetch else None
+
+    def encode_at(start: int, size: int):
+        chunks_ = [articles[w.article][w.start:w.end] for w in pooled[start:start + size]]
+        return _encode_batch(chunks_, cls_id, sep_id, pad_id, pin=pin)
+
     while i < len(pooled):
         batch = pooled[i:i + bs]
-        chunks = [articles[w.article][w.start:w.end] for w in batch]
         try:
+            if pending is not None and pending[0] == i and pending[1] == len(batch):
+                enc = pending[2].result()
+            else:
+                enc = encode_at(i, len(batch))
+            pending = None
+            nxt = i + len(batch)
+            if executor is not None and nxt < len(pooled):
+                pending = (nxt, min(bs, len(pooled) - nxt), executor.submit(encode_at, nxt, bs))
             if device.type == "cuda":
                 torch.cuda.synchronize()
             t0 = time.perf_counter()
-            probs = _run_batch(logits_fn, chunks, cls_id, sep_id, pad_id, device)
+            probs = _forward_encoded(logits_fn, enc, device)
             if device.type == "cuda":
                 torch.cuda.synchronize()
             stats.forward_seconds += time.perf_counter() - t0
@@ -197,6 +228,8 @@ def decode_parallel(
         w_sum.index_add_(0, idx_t, w_t)
         i += len(batch)
 
+    if executor is not None:
+        executor.shutdown(wait=True)
     if total and bool((w_sum <= 0).any().item()):
         raise ValueError("some positions received zero merge weight; mask_left+mask_right too large for the overlap")
     merged = prob_sum / w_sum.clamp_min(1e-12)[:, None]

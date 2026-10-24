@@ -61,6 +61,8 @@ def main() -> None:
         if name == "parallel":
             kw = dict(window=args.window, overlap=args.overlap, tail=args.tail, mask_left=args.mask_left,
                       mask_right=args.mask_right, profile=args.profile, batch_size=args.batch_size)
+        elif name == "tang_parallel":
+            kw = dict(window=125, overlap=20, tail="aligned", batch_size=args.batch_size)
         elif name == "direct_cut":
             kw = dict(window=64, batch_size=args.batch_size)
         pred, stats = run_method(name, chars, logits_fn, special, device, **kw)

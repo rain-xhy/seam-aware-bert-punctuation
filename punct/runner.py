@@ -76,6 +76,12 @@ def run_method(name: str, articles: Sequence[np.ndarray], logits_fn: LogitsFn, s
         stats = {"seconds": st.total_seconds, "forward_seconds": st.forward_seconds, "ter": st.ter,
                  "n_windows": st.n_windows, "n_forward_calls": st.n_forward_calls,
                  "n_oom_retries": st.n_oom_retries, "peak_mem_mb": st.peak_mem_mb}
+    elif name == "tang_parallel":
+        from punct.tang_parallel import decode_tang_parallel
+        labels, st, extra = decode_tang_parallel(articles, logits_fn, special, device, **kw)
+        stats = {"seconds": st.total_seconds, "forward_seconds": st.forward_seconds, "ter": st.ter,
+                 "n_windows": st.n_windows, "n_forward_calls": st.n_forward_calls,
+                 "n_oom_retries": st.n_oom_retries, "peak_mem_mb": st.peak_mem_mb, **extra}
     elif name == "direct_cut":
         labels, st = decode_parallel(articles, logits_fn, cls_id, sep_id, pad_id, device,
                                      window=kw.get("window", 64), overlap=0, tail="short",
