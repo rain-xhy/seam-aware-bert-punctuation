@@ -39,6 +39,7 @@ def main() -> None:
     ap.add_argument("--tail", default="short", choices=["short", "aligned"])
     ap.add_argument("--batch_size", type=int, default=8)
     ap.add_argument("--out", required=True)
+    ap.add_argument("--no_resume", action="store_true", help="ignore an existing --out file and start over")
     args = ap.parse_args()
 
     if args.overlaps and len(args.overlaps) != len(args.windows):
@@ -54,6 +55,13 @@ def main() -> None:
 
     result = {"split": args.split, "n_articles": len(chars), "tail": args.tail,
               "windows": args.windows, "overlaps": overlaps, "models": {}}
+    if os.path.exists(args.out) and not args.no_resume:
+        import json
+        with open(args.out, encoding="utf-8") as fh:
+            old = json.load(fh)
+        if (old.get("split"), old.get("n_articles"), old.get("tail"), old.get("windows"), old.get("overlaps")) ==                 (result["split"], result["n_articles"], result["tail"], result["windows"], result["overlaps"]):
+            result["models"] = old.get("models", {})
+            print(f"resuming from {args.out}", flush=True)
     for spec in args.models:
         if "=" not in spec:
             ap.error(f"bad --models entry {spec!r}, expected name=path")
@@ -63,9 +71,13 @@ def main() -> None:
             print(f"{name}: SKIPPED (no {path})", flush=True)
             dump(args.out, result)
             continue
+        cells = dict(result["models"].get(name, {}).get("cells", {}))
+        todo = [(w, v) for w, v in zip(args.windows, overlaps) if str(w) not in cells or cells[str(w)].get("ckpt") != path]
+        if not todo:
+            print(f"{name}: all cells done, skipping", flush=True)
+            continue
         fn = make_logits_fn(load_finetuned(args.bert_dir, path, device))
-        cells = {}
-        for w, v in zip(args.windows, overlaps):
+        for w, v in todo:
             pred, stats = run_method("parallel", chars, fn, special, device, window=w, overlap=v,
                                      tail=args.tail, batch_size=args.batch_size)
             q = score(gold, pred)

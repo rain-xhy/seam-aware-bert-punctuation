@@ -38,6 +38,7 @@ def main() -> None:
     ap.add_argument("--limit", type=int, default=0)
     ap.add_argument("--edep", action="store_true")
     ap.add_argument("--out", required=True)
+    ap.add_argument("--no_resume", action="store_true", help="ignore an existing --out file and start over")
     args = ap.parse_args()
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -49,11 +50,21 @@ def main() -> None:
     special = (codec.cls_id, codec.sep_id, codec.pad_id)
 
     result = {"ckpt": args.ckpt, "split": args.split, "n_articles": len(chars), "points": []}
+    if os.path.exists(args.out) and not args.no_resume:
+        import json
+        with open(args.out, encoding="utf-8") as fh:
+            old = json.load(fh)
+        if (old.get("ckpt"), old.get("split"), old.get("n_articles")) == (result["ckpt"], result["split"], result["n_articles"]):
+            result = old
+            print(f"resuming from {args.out}: {len(old['points'])} points done", flush=True)
+    done = {(p["config"]["window"], p["config"]["overlap"], p["config"]["tail"]) for p in result["points"]}
     for w in args.windows:
         for v in args.overlaps:
             if v >= w:
                 continue
             for tail in args.tails:
+                if (w, v, tail) in done:
+                    continue
                 kw = dict(window=w, overlap=v, tail=tail, batch_size=args.batch_size)
                 pred, stats = run_method("parallel", chars, logits_fn, special, device, **kw)
                 q = score(gold, pred)
@@ -61,7 +72,7 @@ def main() -> None:
                 print(f"W={w} V={v} tail={tail}: F1={q['micro_f1']:.4f} TER={stats['ter']:.3f} "
                       f"chars/s={stats['chars_per_second']:.0f}", flush=True)
                 dump(args.out, result)
-    if args.edep:
+    if args.edep and "edep" not in result:
         w = max(args.windows)
         result["edep"] = edep_scan(chars, gold, logits_fn, *special, device, window=w,
                                    overlap=w // 2, batch_size=args.batch_size)
