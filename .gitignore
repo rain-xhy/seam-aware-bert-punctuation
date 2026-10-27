@@ -8,6 +8,12 @@ __pycache__/
 dist/
 build/
 
+# Pretrained weights (download separately, 392 MB exceeds GitHub's 100 MB file limit)
+bert-base-chinese/
+
+# Scratch figures
+figures_tmp/
+
 # Data directories
 prepared_data*/
 corpus/

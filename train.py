@@ -103,8 +103,12 @@ def validate(model, dataloader, device):
     model.eval()
     total_loss = 0.0
     all_preds, all_labels = [], []
+    print("  Validating...", flush=True)
+    n_batches = len(dataloader)
     with torch.no_grad():
-        for batch in dataloader:
+        for i, batch in enumerate(dataloader):
+            if i > 0 and i % 500 == 0:
+                print(f"    validation batch {i}/{n_batches}", flush=True)
             input_ids = batch["input_ids"].to(device)
             attention_mask = batch["attention_mask"].to(device)
             labels = batch["labels"].to(device)
@@ -245,8 +249,13 @@ def main():
     best_checkpoint = None
     history = {"args": vars(args), "epochs": []}
     resume_path = os.path.join(args.out_dir, "resume.pt")
+    history_path = os.path.join(args.out_dir, "history.json")
+    last_pt_path = os.path.join(args.out_dir, "last.pt")
     start_epoch, start_batch, carried_loss = 0, 0, 0.0
+
+    # 恢复优先级：1) resume.pt（训练中断） 2) last.pt + history.json（epoch完成）
     if os.path.exists(resume_path) and not args.no_resume:
+        # 从训练中断点恢复
         st = torch.load(resume_path, map_location="cpu")
         model.load_state_dict(st["model"])
         optimizer.load_state_dict(st["optimizer"])
@@ -258,6 +267,26 @@ def main():
             best_checkpoint = os.path.join(args.out_dir, "best.pt")
         print(f"RESUMED from {resume_path}: epoch {start_epoch + 1}, micro-batch {start_batch}", flush=True)
         del st
+    elif os.path.exists(history_path) and os.path.exists(last_pt_path) and not args.no_resume:
+        # 从已完成的 epoch 继续
+        with open(history_path, "r", encoding="utf-8") as f:
+            history = json.load(f)
+        start_epoch = len(history["epochs"])
+        if start_epoch < args.epochs:
+            model.load_state_dict(torch.load(last_pt_path, map_location="cpu"))
+            # 调整 scheduler：跳过已完成的 epoch 对应的步数
+            completed_steps = start_epoch * (batches_per_epoch // args.grad_accum)
+            for _ in range(completed_steps):
+                scheduler.step()
+            print(f"RESUMED from {last_pt_path}: continuing from epoch {start_epoch + 1} (scheduler advanced {completed_steps} steps)", flush=True)
+            # 从 history 中恢复 best_val_f1
+            if history["epochs"]:
+                best_val_f1 = max(e["micro_f1"] for e in history["epochs"])
+                if os.path.exists(os.path.join(args.out_dir, "best.pt")):
+                    best_checkpoint = os.path.join(args.out_dir, "best.pt")
+        else:
+            print(f"Training already completed ({start_epoch}/{args.epochs} epochs), exiting.", flush=True)
+            return
 
     for epoch in range(start_epoch, args.epochs):
         t0 = time.time()
@@ -290,6 +319,12 @@ def main():
             best_checkpoint = os.path.join(args.out_dir, "best.pt")
             torch.save(model.state_dict(), best_checkpoint)
             print(f"  ✓ Saved best checkpoint to {best_checkpoint}")
+        # 每个 epoch 完成后删除 resume.pt，避免下个 epoch 错误恢复
+        if os.path.exists(resume_path):
+            os.remove(resume_path)
+        # 重置 start_batch 和 carried_loss，确保下个 epoch 从头开始
+        start_batch = 0
+        carried_loss = 0.0
 
     if os.path.exists(resume_path):
         os.remove(resume_path)  # run completed; a stale state must not be resumed later

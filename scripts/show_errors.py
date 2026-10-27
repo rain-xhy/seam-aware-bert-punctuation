@@ -22,7 +22,7 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from punct.char_codec import CharCodec  # noqa: E402
 from punct.runner import load_split  # noqa: E402
 
-LABEL_NAMES = ["", "，", "。", "？", "！", "、", "；", "："]
+LABEL_NAMES = ["", "，", "。", "？", "！", "；", "：", "、"]  # same order as prepare_complete_data.LABELS
 
 
 def find_errors(gold: np.ndarray, pred: np.ndarray, limit: int = 50) -> dict:

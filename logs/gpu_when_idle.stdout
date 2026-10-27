@@ -1,0 +1,153 @@
+[2026-10-26 23:53:22] encoder check for T2_center_only already done, skipped
+[2026-10-26 23:53:22] encoder check for T3_noedge already done, skipped
+[2026-10-26 23:53:22] encoder check for T5_no_class_weight already done, skipped
+[2026-10-27 00:53:36] before precision check: still waiting, waited 1.0 h | gpu mem=2419 MiB util=31%
+[2026-10-27 01:54:05] before precision check: still waiting, waited 2.0 h | gpu mem=2419 MiB util=40%
+[2026-10-27 02:54:20] before precision check: still waiting, waited 3.0 h | gpu mem=2419 MiB util=1%
+[2026-10-27 03:54:38] before precision check: still waiting, waited 4.0 h | gpu mem=2419 MiB util=94%
+[2026-10-27 04:55:07] before precision check: still waiting, waited 5.0 h | gpu mem=2419 MiB util=24%
+[2026-10-27 05:31:30] before precision check: busy again (mem=2191 MiB util=76%), idle clock reset
+[2026-10-27 05:55:10] before precision check: still waiting, waited 6.0 h | gpu mem=52 MiB util=0%
+[2026-10-27 05:58:42] before precision check: GPU idle for 20 min (mem=52 MiB util=0% temp=52 sm=210 MHz)
+[2026-10-27 05:58:42] start precision_check: E:\anaconda\app\envs\yolov8\python.exe -X utf8 -m scripts.verify_precision --ckpt checkpoints/T1_varlen/best.pt --split test --limit 300 --out results/precision_consistency.json
+[2026-10-27 05:58:42]   precision_check running | gpu mem=52 MiB util=0% temp=52 sm=210 MHz
+[2026-10-27 05:59:12]   precision_check running | gpu mem=52 MiB util=0% temp=51 sm=210 MHz
+[2026-10-27 05:59:42]   precision_check running | gpu mem=871 MiB util=96% temp=67 sm=1665 MHz
+[2026-10-27 06:00:12] done precision_check rc=0
+[2026-10-27 06:03:14] before timing: GPU idle for 3 min (mem=52 MiB util=0% temp=52 sm=210 MHz)
+[2026-10-27 06:03:14] start timing_repeat_driver: E:\anaconda\app\envs\yolov8\python.exe run_timing_repeat.py
+[2026-10-27 06:03:14]   timing_repeat_driver running | gpu mem=52 MiB util=0% temp=52 sm=210 MHz
+[2026-10-27 06:03:44]   timing_repeat_driver running | gpu mem=815 MiB util=58% temp=63 sm=1950 MHz
+[2026-10-27 06:04:14]   timing_repeat_driver running | gpu mem=815 MiB util=83% temp=68 sm=1950 MHz
+[2026-10-27 06:04:44]   timing_repeat_driver running | gpu mem=815 MiB util=82% temp=68 sm=1935 MHz
+[2026-10-27 06:05:15]   timing_repeat_driver running | gpu mem=815 MiB util=40% temp=66 sm=1935 MHz
+[2026-10-27 06:05:45]   timing_repeat_driver running | gpu mem=873 MiB util=16% temp=66 sm=1935 MHz
+[2026-10-27 06:06:15]   timing_repeat_driver running | gpu mem=873 MiB util=34% temp=66 sm=1935 MHz
+[2026-10-27 06:06:45]   timing_repeat_driver running | gpu mem=873 MiB util=53% temp=66 sm=1935 MHz
+[2026-10-27 06:07:15]   timing_repeat_driver running | gpu mem=873 MiB util=65% temp=66 sm=1935 MHz
+[2026-10-27 06:07:45]   timing_repeat_driver running | gpu mem=873 MiB util=48% temp=66 sm=1935 MHz
+[2026-10-27 06:08:15]   timing_repeat_driver running | gpu mem=873 MiB util=49% temp=66 sm=1935 MHz
+[2026-10-27 06:08:46]   timing_repeat_driver running | gpu mem=873 MiB util=50% temp=67 sm=1935 MHz
+[2026-10-27 06:09:16]   timing_repeat_driver running | gpu mem=873 MiB util=51% temp=67 sm=1935 MHz
+[2026-10-27 06:09:46]   timing_repeat_driver running | gpu mem=873 MiB util=43% temp=67 sm=1935 MHz
+[2026-10-27 06:10:16]   timing_repeat_driver running | gpu mem=873 MiB util=56% temp=67 sm=1935 MHz
+[2026-10-27 06:10:46]   timing_repeat_driver running | gpu mem=873 MiB util=56% temp=67 sm=1935 MHz
+[2026-10-27 06:11:16]   timing_repeat_driver running | gpu mem=873 MiB util=37% temp=66 sm=1935 MHz
+[2026-10-27 06:11:47]   timing_repeat_driver running | gpu mem=873 MiB util=66% temp=67 sm=1935 MHz
+[2026-10-27 06:12:17]   timing_repeat_driver running | gpu mem=873 MiB util=58% temp=67 sm=1935 MHz
+[2026-10-27 06:12:47]   timing_repeat_driver running | gpu mem=873 MiB util=43% temp=66 sm=1935 MHz
+[2026-10-27 06:13:17]   timing_repeat_driver running | gpu mem=873 MiB util=52% temp=67 sm=1935 MHz
+[2026-10-27 06:13:47]   timing_repeat_driver running | gpu mem=873 MiB util=55% temp=67 sm=1935 MHz
+[2026-10-27 06:14:17]   timing_repeat_driver running | gpu mem=873 MiB util=53% temp=67 sm=1935 MHz
+[2026-10-27 06:14:47]   timing_repeat_driver running | gpu mem=873 MiB util=35% temp=66 sm=1935 MHz
+[2026-10-27 06:15:18]   timing_repeat_driver running | gpu mem=873 MiB util=38% temp=66 sm=1935 MHz
+[2026-10-27 06:15:48]   timing_repeat_driver running | gpu mem=873 MiB util=59% temp=68 sm=1935 MHz
+[2026-10-27 06:16:18]   timing_repeat_driver running | gpu mem=873 MiB util=74% temp=68 sm=1935 MHz
+[2026-10-27 06:16:48]   timing_repeat_driver running | gpu mem=873 MiB util=72% temp=67 sm=1935 MHz
+[2026-10-27 06:17:18]   timing_repeat_driver running | gpu mem=873 MiB util=55% temp=67 sm=1935 MHz
+[2026-10-27 06:17:48]   timing_repeat_driver running | gpu mem=873 MiB util=44% temp=67 sm=1935 MHz
+[2026-10-27 06:18:19]   timing_repeat_driver running | gpu mem=873 MiB util=66% temp=68 sm=1935 MHz
+[2026-10-27 06:18:49]   timing_repeat_driver running | gpu mem=873 MiB util=46% temp=67 sm=1935 MHz
+[2026-10-27 06:19:19]   timing_repeat_driver running | gpu mem=873 MiB util=72% temp=67 sm=1935 MHz
+[2026-10-27 06:19:49]   timing_repeat_driver running | gpu mem=873 MiB util=77% temp=68 sm=1935 MHz
+[2026-10-27 06:20:19]   timing_repeat_driver running | gpu mem=873 MiB util=72% temp=70 sm=1935 MHz
+[2026-10-27 06:20:49]   timing_repeat_driver running | gpu mem=873 MiB util=49% temp=66 sm=1935 MHz
+[2026-10-27 06:21:20]   timing_repeat_driver running | gpu mem=873 MiB util=74% temp=69 sm=1935 MHz
+[2026-10-27 06:21:50]   timing_repeat_driver running | gpu mem=873 MiB util=98% temp=71 sm=1852 MHz
+[2026-10-27 06:22:20]   timing_repeat_driver running | gpu mem=873 MiB util=98% temp=71 sm=1860 MHz
+[2026-10-27 06:22:50]   timing_repeat_driver running | gpu mem=873 MiB util=75% temp=67 sm=1935 MHz
+[2026-10-27 06:23:20]   timing_repeat_driver running | gpu mem=873 MiB util=96% temp=70 sm=1905 MHz
+[2026-10-27 06:23:50]   timing_repeat_driver running | gpu mem=873 MiB util=67% temp=69 sm=1935 MHz
+[2026-10-27 06:24:20]   timing_repeat_driver running | gpu mem=873 MiB util=78% temp=68 sm=1935 MHz
+[2026-10-27 06:24:51]   timing_repeat_driver running | gpu mem=873 MiB util=84% temp=69 sm=1935 MHz
+[2026-10-27 06:25:21]   timing_repeat_driver running | gpu mem=811 MiB util=45% temp=62 sm=1957 MHz
+[2026-10-27 06:25:51]   timing_repeat_driver running | gpu mem=815 MiB util=67% temp=67 sm=1950 MHz
+[2026-10-27 06:26:21]   timing_repeat_driver running | gpu mem=815 MiB util=63% temp=68 sm=1935 MHz
+[2026-10-27 06:26:51]   timing_repeat_driver running | gpu mem=815 MiB util=81% temp=69 sm=1935 MHz
+[2026-10-27 06:27:21]   timing_repeat_driver running | gpu mem=815 MiB util=54% temp=68 sm=1935 MHz
+[2026-10-27 06:27:51]   timing_repeat_driver running | gpu mem=873 MiB util=37% temp=66 sm=1935 MHz
+[2026-10-27 06:28:22]   timing_repeat_driver running | gpu mem=873 MiB util=38% temp=66 sm=1935 MHz
+[2026-10-27 06:28:52]   timing_repeat_driver running | gpu mem=873 MiB util=62% temp=66 sm=1935 MHz
+[2026-10-27 06:29:22]   timing_repeat_driver running | gpu mem=873 MiB util=55% temp=67 sm=1935 MHz
+[2026-10-27 06:29:52]   timing_repeat_driver running | gpu mem=873 MiB util=50% temp=66 sm=1935 MHz
+[2026-10-27 06:30:22]   timing_repeat_driver running | gpu mem=873 MiB util=41% temp=67 sm=1935 MHz
+[2026-10-27 06:30:52]   timing_repeat_driver running | gpu mem=873 MiB util=54% temp=67 sm=1935 MHz
+[2026-10-27 06:31:22]   timing_repeat_driver running | gpu mem=873 MiB util=26% temp=66 sm=1935 MHz
+[2026-10-27 06:31:53]   timing_repeat_driver running | gpu mem=873 MiB util=44% temp=67 sm=1935 MHz
+[2026-10-27 06:32:23]   timing_repeat_driver running | gpu mem=873 MiB util=25% temp=66 sm=1935 MHz
+[2026-10-27 06:32:53]   timing_repeat_driver running | gpu mem=873 MiB util=35% temp=66 sm=1935 MHz
+[2026-10-27 06:33:23]   timing_repeat_driver running | gpu mem=873 MiB util=45% temp=67 sm=1935 MHz
+[2026-10-27 06:33:53]   timing_repeat_driver running | gpu mem=873 MiB util=59% temp=67 sm=1935 MHz
+[2026-10-27 06:34:23]   timing_repeat_driver running | gpu mem=873 MiB util=31% temp=67 sm=1935 MHz
+[2026-10-27 06:34:54]   timing_repeat_driver running | gpu mem=873 MiB util=43% temp=67 sm=1935 MHz
+[2026-10-27 06:35:24]   timing_repeat_driver running | gpu mem=873 MiB util=61% temp=67 sm=1935 MHz
+[2026-10-27 06:35:54]   timing_repeat_driver running | gpu mem=873 MiB util=43% temp=66 sm=1935 MHz
+[2026-10-27 06:36:24]   timing_repeat_driver running | gpu mem=873 MiB util=30% temp=66 sm=1935 MHz
+[2026-10-27 06:36:54]   timing_repeat_driver running | gpu mem=873 MiB util=39% temp=65 sm=1935 MHz
+[2026-10-27 06:37:24]   timing_repeat_driver running | gpu mem=873 MiB util=0% temp=64 sm=1950 MHz
+[2026-10-27 06:37:54]   timing_repeat_driver running | gpu mem=873 MiB util=29% temp=68 sm=1950 MHz
+[2026-10-27 06:38:25]   timing_repeat_driver running | gpu mem=873 MiB util=67% temp=67 sm=1935 MHz
+[2026-10-27 06:38:55]   timing_repeat_driver running | gpu mem=873 MiB util=50% temp=68 sm=1935 MHz
+[2026-10-27 06:39:25]   timing_repeat_driver running | gpu mem=873 MiB util=34% temp=68 sm=1935 MHz
+[2026-10-27 06:39:55]   timing_repeat_driver running | gpu mem=873 MiB util=30% temp=66 sm=1935 MHz
+[2026-10-27 06:40:25]   timing_repeat_driver running | gpu mem=873 MiB util=29% temp=67 sm=1935 MHz
+[2026-10-27 06:40:55]   timing_repeat_driver running | gpu mem=873 MiB util=34% temp=66 sm=1935 MHz
+[2026-10-27 06:41:26]   timing_repeat_driver running | gpu mem=873 MiB util=52% temp=67 sm=1935 MHz
+[2026-10-27 06:41:56]   timing_repeat_driver running | gpu mem=873 MiB util=45% temp=68 sm=1935 MHz
+[2026-10-27 06:42:26]   timing_repeat_driver running | gpu mem=873 MiB util=69% temp=69 sm=1935 MHz
+[2026-10-27 06:42:56]   timing_repeat_driver running | gpu mem=873 MiB util=77% temp=69 sm=1935 MHz
+[2026-10-27 06:43:26]   timing_repeat_driver running | gpu mem=873 MiB util=77% temp=68 sm=1935 MHz
+[2026-10-27 06:43:56]   timing_repeat_driver running | gpu mem=873 MiB util=77% temp=68 sm=1935 MHz
+[2026-10-27 06:44:26]   timing_repeat_driver running | gpu mem=873 MiB util=96% temp=72 sm=1860 MHz
+[2026-10-27 06:44:57]   timing_repeat_driver running | gpu mem=873 MiB util=97% temp=71 sm=1852 MHz
+[2026-10-27 06:45:27]   timing_repeat_driver running | gpu mem=873 MiB util=91% temp=70 sm=1935 MHz
+[2026-10-27 06:45:57]   timing_repeat_driver running | gpu mem=873 MiB util=95% temp=71 sm=1905 MHz
+[2026-10-27 06:46:27]   timing_repeat_driver running | gpu mem=873 MiB util=84% temp=69 sm=1935 MHz
+[2026-10-27 06:46:57]   timing_repeat_driver running | gpu mem=873 MiB util=85% temp=69 sm=1935 MHz
+[2026-10-27 06:47:27]   timing_repeat_driver running | gpu mem=873 MiB util=80% temp=68 sm=1935 MHz
+[2026-10-27 06:47:58]   timing_repeat_driver running | gpu mem=815 MiB util=60% temp=64 sm=1950 MHz
+[2026-10-27 06:48:28]   timing_repeat_driver running | gpu mem=815 MiB util=51% temp=66 sm=1950 MHz
+[2026-10-27 06:48:58]   timing_repeat_driver running | gpu mem=815 MiB util=58% temp=68 sm=1935 MHz
+[2026-10-27 06:49:28]   timing_repeat_driver running | gpu mem=815 MiB util=74% temp=69 sm=1935 MHz
+[2026-10-27 06:49:58]   timing_repeat_driver running | gpu mem=873 MiB util=54% temp=67 sm=1935 MHz
+[2026-10-27 06:50:28]   timing_repeat_driver running | gpu mem=873 MiB util=33% temp=65 sm=1935 MHz
+[2026-10-27 06:50:58]   timing_repeat_driver running | gpu mem=873 MiB util=52% temp=66 sm=1935 MHz
+[2026-10-27 06:51:29]   timing_repeat_driver running | gpu mem=873 MiB util=48% temp=67 sm=1935 MHz
+[2026-10-27 06:51:59]   timing_repeat_driver running | gpu mem=873 MiB util=36% temp=66 sm=1935 MHz
+[2026-10-27 06:52:29]   timing_repeat_driver running | gpu mem=873 MiB util=64% temp=67 sm=1935 MHz
+[2026-10-27 06:52:59]   timing_repeat_driver running | gpu mem=873 MiB util=60% temp=67 sm=1935 MHz
+[2026-10-27 06:53:29]   timing_repeat_driver running | gpu mem=873 MiB util=27% temp=66 sm=1935 MHz
+[2026-10-27 06:53:59]   timing_repeat_driver running | gpu mem=873 MiB util=31% temp=67 sm=1935 MHz
+[2026-10-27 06:54:30]   timing_repeat_driver running | gpu mem=873 MiB util=62% temp=67 sm=1935 MHz
+[2026-10-27 06:55:00]   timing_repeat_driver running | gpu mem=873 MiB util=59% temp=66 sm=1935 MHz
+[2026-10-27 06:55:30]   timing_repeat_driver running | gpu mem=873 MiB util=48% temp=65 sm=1845 MHz
+[2026-10-27 06:56:00]   timing_repeat_driver running | gpu mem=873 MiB util=60% temp=67 sm=1935 MHz
+[2026-10-27 06:56:30]   timing_repeat_driver running | gpu mem=873 MiB util=34% temp=66 sm=1950 MHz
+[2026-10-27 06:57:00]   timing_repeat_driver running | gpu mem=873 MiB util=64% temp=67 sm=1950 MHz
+[2026-10-27 06:57:31]   timing_repeat_driver running | gpu mem=873 MiB util=35% temp=66 sm=1950 MHz
+[2026-10-27 06:58:01]   timing_repeat_driver running | gpu mem=873 MiB util=26% temp=66 sm=1950 MHz
+[2026-10-27 06:58:31]   timing_repeat_driver running | gpu mem=873 MiB util=51% temp=67 sm=1950 MHz
+[2026-10-27 06:59:01]   timing_repeat_driver running | gpu mem=873 MiB util=46% temp=67 sm=1950 MHz
+[2026-10-27 06:59:31]   timing_repeat_driver running | gpu mem=873 MiB util=50% temp=66 sm=1950 MHz
+[2026-10-27 07:00:01]   timing_repeat_driver running | gpu mem=873 MiB util=41% temp=67 sm=1950 MHz
+[2026-10-27 07:00:31]   timing_repeat_driver running | gpu mem=873 MiB util=52% temp=67 sm=1935 MHz
+[2026-10-27 07:01:02]   timing_repeat_driver running | gpu mem=873 MiB util=45% temp=68 sm=1935 MHz
+[2026-10-27 07:01:32]   timing_repeat_driver running | gpu mem=873 MiB util=60% temp=68 sm=1935 MHz
+[2026-10-27 07:02:02]   timing_repeat_driver running | gpu mem=873 MiB util=47% temp=66 sm=1935 MHz
+[2026-10-27 07:02:32]   timing_repeat_driver running | gpu mem=873 MiB util=48% temp=67 sm=1950 MHz
+[2026-10-27 07:03:02]   timing_repeat_driver running | gpu mem=873 MiB util=47% temp=67 sm=1950 MHz
+[2026-10-27 07:03:32]   timing_repeat_driver running | gpu mem=873 MiB util=33% temp=67 sm=1935 MHz
+[2026-10-27 07:04:02]   timing_repeat_driver running | gpu mem=873 MiB util=27% temp=67 sm=1935 MHz
+[2026-10-27 07:04:33]   timing_repeat_driver running | gpu mem=873 MiB util=63% temp=70 sm=1935 MHz
+[2026-10-27 07:05:03]   timing_repeat_driver running | gpu mem=873 MiB util=72% temp=69 sm=1935 MHz
+[2026-10-27 07:05:33]   timing_repeat_driver running | gpu mem=873 MiB util=64% temp=68 sm=1935 MHz
+[2026-10-27 07:06:03]   timing_repeat_driver running | gpu mem=873 MiB util=66% temp=69 sm=1935 MHz
+[2026-10-27 07:06:33]   timing_repeat_driver running | gpu mem=873 MiB util=97% temp=71 sm=1860 MHz
+[2026-10-27 07:07:03]   timing_repeat_driver running | gpu mem=873 MiB util=98% temp=71 sm=1867 MHz
+[2026-10-27 07:07:34]   timing_repeat_driver running | gpu mem=873 MiB util=75% temp=68 sm=1935 MHz
+[2026-10-27 07:08:04]   timing_repeat_driver running | gpu mem=873 MiB util=96% temp=70 sm=1920 MHz
+[2026-10-27 07:08:34]   timing_repeat_driver running | gpu mem=873 MiB util=79% temp=69 sm=1935 MHz
+[2026-10-27 07:09:04]   timing_repeat_driver running | gpu mem=873 MiB util=83% temp=68 sm=1935 MHz
+[2026-10-27 07:09:34]   timing_repeat_driver running | gpu mem=873 MiB util=86% temp=68 sm=1935 MHz
+[2026-10-27 07:10:04] done timing_repeat_driver rc=0
+[2026-10-27 07:10:04] all done, timing rc=0

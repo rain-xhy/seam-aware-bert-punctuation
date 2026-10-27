@@ -9,3 +9,198 @@ At line:1 char:495
 You should probably TRAIN this model on a down-stream task to be able to use it for predictions and inference.
 Training 3 epochs, 119510 batches/epoch, grad_accum=8
 Total steps=44814, warmup=4481, device=cuda
+  step 2000/119510 | loss(last 2000)=0.9846 | elapsed=1.6min | epoch_eta=96.5min
+  step 4000/119510 | loss(last 2000)=0.2107 | elapsed=3.5min | epoch_eta=102.1min
+  step 6000/119510 | loss(last 2000)=0.1428 | elapsed=5.2min | epoch_eta=99.2min
+  step 8000/119510 | loss(last 2000)=0.1243 | elapsed=7.0min | epoch_eta=98.1min
+  step 10000/119510 | loss(last 2000)=0.1096 | elapsed=8.8min | epoch_eta=96.3min
+  step 12000/119510 | loss(last 2000)=0.0977 | elapsed=10.5min | epoch_eta=93.8min
+  step 14000/119510 | loss(last 2000)=0.0965 | elapsed=13.4min | epoch_eta=101.1min
+  step 16000/119510 | loss(last 2000)=0.0941 | elapsed=19.0min | epoch_eta=123.0min
+  step 18000/119510 | loss(last 2000)=0.0879 | elapsed=20.9min | epoch_eta=118.0min
+  step 20000/119510 | loss(last 2000)=0.0833 | elapsed=22.6min | epoch_eta=112.2min
+  step 22000/119510 | loss(last 2000)=0.0842 | elapsed=24.4min | epoch_eta=108.2min
+  step 24000/119510 | loss(last 2000)=0.0788 | elapsed=26.4min | epoch_eta=105.0min
+  step 26000/119510 | loss(last 2000)=0.0779 | elapsed=28.2min | epoch_eta=101.6min
+  step 28000/119510 | loss(last 2000)=0.0774 | elapsed=30.2min | epoch_eta=98.8min
+  step 30000/119510 | loss(last 2000)=0.0754 | elapsed=32.4min | epoch_eta=96.7min
+  step 32000/119510 | loss(last 2000)=0.0740 | elapsed=34.1min | epoch_eta=93.2min
+  step 34000/119510 | loss(last 2000)=0.0779 | elapsed=35.9min | epoch_eta=90.2min
+  step 36000/119510 | loss(last 2000)=0.0799 | elapsed=37.6min | epoch_eta=87.2min
+  step 38000/119510 | loss(last 2000)=0.0681 | elapsed=39.6min | epoch_eta=85.0min
+  step 40000/119510 | loss(last 2000)=0.0723 | elapsed=41.2min | epoch_eta=81.9min
+  step 42000/119510 | loss(last 2000)=0.0675 | elapsed=44.1min | epoch_eta=81.4min
+  step 44000/119510 | loss(last 2000)=0.0691 | elapsed=47.1min | epoch_eta=80.8min
+  step 46000/119510 | loss(last 2000)=0.0712 | elapsed=50.2min | epoch_eta=80.2min
+  step 48000/119510 | loss(last 2000)=0.0712 | elapsed=53.1min | epoch_eta=79.1min
+  step 50000/119510 | loss(last 2000)=0.0681 | elapsed=55.9min | epoch_eta=77.7min
+  step 52000/119510 | loss(last 2000)=0.0720 | elapsed=59.1min | epoch_eta=76.7min
+  step 54000/119510 | loss(last 2000)=0.0666 | elapsed=61.8min | epoch_eta=75.0min
+  step 56000/119510 | loss(last 2000)=0.0686 | elapsed=64.5min | epoch_eta=73.2min
+  step 58000/119510 | loss(last 2000)=0.0711 | elapsed=67.4min | epoch_eta=71.4min
+  step 60000/119510 | loss(last 2000)=0.0645 | elapsed=69.9min | epoch_eta=69.3min
+  step 62000/119510 | loss(last 2000)=0.0631 | elapsed=72.5min | epoch_eta=67.2min
+  step 64000/119510 | loss(last 2000)=0.0644 | elapsed=75.5min | epoch_eta=65.5min
+  step 66000/119510 | loss(last 2000)=0.0645 | elapsed=78.2min | epoch_eta=63.4min
+  step 68000/119510 | loss(last 2000)=0.0634 | elapsed=81.1min | epoch_eta=61.4min
+  step 70000/119510 | loss(last 2000)=0.0659 | elapsed=83.9min | epoch_eta=59.3min
+  step 72000/119510 | loss(last 2000)=0.0629 | elapsed=86.6min | epoch_eta=57.2min
+  step 74000/119510 | loss(last 2000)=0.0658 | elapsed=89.3min | epoch_eta=54.9min
+  step 76000/119510 | loss(last 2000)=0.0589 | elapsed=91.5min | epoch_eta=52.4min
+  step 78000/119510 | loss(last 2000)=0.0606 | elapsed=94.1min | epoch_eta=50.1min
+  step 80000/119510 | loss(last 2000)=0.0597 | elapsed=96.8min | epoch_eta=47.8min
+  step 82000/119510 | loss(last 2000)=0.0631 | elapsed=99.3min | epoch_eta=45.4min
+  step 84000/119510 | loss(last 2000)=0.0651 | elapsed=101.6min | epoch_eta=43.0min
+  step 86000/119510 | loss(last 2000)=0.0609 | elapsed=104.5min | epoch_eta=40.7min
+  step 88000/119510 | loss(last 2000)=0.0605 | elapsed=107.3min | epoch_eta=38.4min
+  step 90000/119510 | loss(last 2000)=0.0559 | elapsed=113.2min | epoch_eta=37.1min
+  step 92000/119510 | loss(last 2000)=0.0624 | elapsed=121.1min | epoch_eta=36.2min
+  step 94000/119510 | loss(last 2000)=0.0593 | elapsed=124.6min | epoch_eta=33.8min
+  step 96000/119510 | loss(last 2000)=0.0615 | elapsed=128.2min | epoch_eta=31.4min
+  step 98000/119510 | loss(last 2000)=0.0661 | elapsed=131.6min | epoch_eta=28.9min
+  step 100000/119510 | loss(last 2000)=0.0603 | elapsed=134.6min | epoch_eta=26.3min
+  step 102000/119510 | loss(last 2000)=0.0580 | elapsed=137.5min | epoch_eta=23.6min
+  step 104000/119510 | loss(last 2000)=0.0574 | elapsed=140.7min | epoch_eta=21.0min
+  step 106000/119510 | loss(last 2000)=0.0585 | elapsed=143.0min | epoch_eta=18.2min
+  step 108000/119510 | loss(last 2000)=0.0589 | elapsed=144.5min | epoch_eta=15.4min
+  step 110000/119510 | loss(last 2000)=0.0549 | elapsed=146.0min | epoch_eta=12.6min
+  step 112000/119510 | loss(last 2000)=0.0579 | elapsed=147.5min | epoch_eta=9.9min
+  step 114000/119510 | loss(last 2000)=0.0586 | elapsed=149.0min | epoch_eta=7.2min
+  step 116000/119510 | loss(last 2000)=0.0561 | elapsed=150.5min | epoch_eta=4.6min
+  step 118000/119510 | loss(last 2000)=0.0536 | elapsed=152.0min | epoch_eta=1.9min
+Epoch 1/3 | train_loss=0.0885 | val_loss=0.0685 | time=9595.8s
+  Val micro-F1=0.7935 | macro-F1=0.6387
+  ✓ Saved best checkpoint to checkpoints/T1_varlen\best.pt
+  step 2000/119510 | loss(last 2000)=0.0552 | elapsed=1.5min | epoch_eta=86.7min
+  step 4000/119510 | loss(last 2000)=0.0541 | elapsed=3.0min | epoch_eta=85.2min
+  step 6000/119510 | loss(last 2000)=0.0535 | elapsed=4.5min | epoch_eta=84.8min
+  step 8000/119510 | loss(last 2000)=0.0525 | elapsed=6.0min | epoch_eta=83.1min
+  step 10000/119510 | loss(last 2000)=0.0528 | elapsed=7.4min | epoch_eta=81.5min
+  step 12000/119510 | loss(last 2000)=0.0532 | elapsed=8.9min | epoch_eta=79.8min
+  step 14000/119510 | loss(last 2000)=0.0519 | elapsed=10.4min | epoch_eta=78.2min
+  step 16000/119510 | loss(last 2000)=0.0484 | elapsed=11.8min | epoch_eta=76.6min
+  step 18000/119510 | loss(last 2000)=0.0562 | elapsed=13.3min | epoch_eta=75.1min
+  step 20000/119510 | loss(last 2000)=0.0524 | elapsed=14.8min | epoch_eta=73.6min
+  step 22000/119510 | loss(last 2000)=0.0526 | elapsed=16.3min | epoch_eta=72.0min
+  step 24000/119510 | loss(last 2000)=0.0522 | elapsed=17.7min | epoch_eta=70.5min
+  step 26000/119510 | loss(last 2000)=0.0540 | elapsed=19.2min | epoch_eta=69.0min
+  step 28000/119510 | loss(last 2000)=0.0568 | elapsed=20.7min | epoch_eta=67.5min
+  step 30000/119510 | loss(last 2000)=0.0539 | elapsed=22.1min | epoch_eta=66.0min
+  step 32000/119510 | loss(last 2000)=0.0489 | elapsed=23.6min | epoch_eta=64.6min
+  step 34000/119510 | loss(last 2000)=0.0543 | elapsed=25.1min | epoch_eta=63.1min
+  step 36000/119510 | loss(last 2000)=0.0473 | elapsed=26.6min | epoch_eta=61.7min
+  step 38000/119510 | loss(last 2000)=0.0497 | elapsed=28.1min | epoch_eta=60.2min
+  step 40000/119510 | loss(last 2000)=0.0572 | elapsed=29.6min | epoch_eta=58.7min
+  step 42000/119510 | loss(last 2000)=0.0498 | elapsed=31.1min | epoch_eta=57.4min
+  step 44000/119510 | loss(last 2000)=0.0509 | elapsed=32.8min | epoch_eta=56.3min
+  step 46000/119510 | loss(last 2000)=0.0482 | elapsed=34.5min | epoch_eta=55.1min
+  step 48000/119510 | loss(last 2000)=0.0471 | elapsed=36.2min | epoch_eta=53.9min
+  step 50000/119510 | loss(last 2000)=0.0530 | elapsed=38.0min | epoch_eta=52.8min
+  step 52000/119510 | loss(last 2000)=0.0477 | elapsed=39.7min | epoch_eta=51.6min
+  step 54000/119510 | loss(last 2000)=0.0479 | elapsed=41.3min | epoch_eta=50.1min
+  step 56000/119510 | loss(last 2000)=0.0519 | elapsed=42.8min | epoch_eta=48.6min
+  step 58000/119510 | loss(last 2000)=0.0486 | elapsed=44.5min | epoch_eta=47.2min
+  step 60000/119510 | loss(last 2000)=0.0461 | elapsed=46.1min | epoch_eta=45.7min
+  step 62000/119510 | loss(last 2000)=0.0495 | elapsed=47.7min | epoch_eta=44.3min
+  step 64000/119510 | loss(last 2000)=0.0503 | elapsed=50.1min | epoch_eta=43.5min
+  step 66000/119510 | loss(last 2000)=0.0441 | elapsed=51.7min | epoch_eta=41.9min
+  step 68000/119510 | loss(last 2000)=0.0494 | elapsed=53.3min | epoch_eta=40.4min
+  step 70000/119510 | loss(last 2000)=0.0497 | elapsed=54.9min | epoch_eta=38.8min
+  step 72000/119510 | loss(last 2000)=0.0448 | elapsed=56.4min | epoch_eta=37.2min
+  step 74000/119510 | loss(last 2000)=0.0485 | elapsed=58.8min | epoch_eta=36.1min
+  step 76000/119510 | loss(last 2000)=0.0456 | elapsed=61.7min | epoch_eta=35.3min
+  step 78000/119510 | loss(last 2000)=0.0463 | elapsed=64.4min | epoch_eta=34.3min
+  step 80000/119510 | loss(last 2000)=0.0472 | elapsed=67.1min | epoch_eta=33.1min
+  step 82000/119510 | loss(last 2000)=0.0485 | elapsed=69.8min | epoch_eta=31.9min
+  step 84000/119510 | loss(last 2000)=0.0443 | elapsed=72.4min | epoch_eta=30.6min
+  step 86000/119510 | loss(last 2000)=0.0466 | elapsed=75.3min | epoch_eta=29.4min
+  step 88000/119510 | loss(last 2000)=0.0469 | elapsed=78.3min | epoch_eta=28.0min
+  step 90000/119510 | loss(last 2000)=0.0468 | elapsed=81.2min | epoch_eta=26.6min
+  step 92000/119510 | loss(last 2000)=0.0472 | elapsed=84.0min | epoch_eta=25.1min
+  step 94000/119510 | loss(last 2000)=0.0425 | elapsed=85.5min | epoch_eta=23.2min
+  step 96000/119510 | loss(last 2000)=0.0403 | elapsed=87.1min | epoch_eta=21.3min
+  step 98000/119510 | loss(last 2000)=0.0481 | elapsed=88.6min | epoch_eta=19.4min
+  step 100000/119510 | loss(last 2000)=0.0466 | elapsed=90.1min | epoch_eta=17.6min
+  step 102000/119510 | loss(last 2000)=0.0433 | elapsed=91.6min | epoch_eta=15.7min
+  step 104000/119510 | loss(last 2000)=0.0462 | elapsed=93.1min | epoch_eta=13.9min
+  step 106000/119510 | loss(last 2000)=0.0426 | elapsed=94.6min | epoch_eta=12.1min
+  step 108000/119510 | loss(last 2000)=0.0419 | elapsed=96.1min | epoch_eta=10.2min
+  step 110000/119510 | loss(last 2000)=0.0464 | elapsed=97.7min | epoch_eta=8.4min
+  step 112000/119510 | loss(last 2000)=0.0434 | elapsed=99.3min | epoch_eta=6.7min
+  step 114000/119510 | loss(last 2000)=0.0405 | elapsed=100.8min | epoch_eta=4.9min
+  step 116000/119510 | loss(last 2000)=0.0394 | elapsed=102.3min | epoch_eta=3.1min
+  step 118000/119510 | loss(last 2000)=0.0427 | elapsed=103.9min | epoch_eta=1.3min
+Epoch 2/3 | train_loss=0.0486 | val_loss=0.0722 | time=6721.2s
+  Val micro-F1=0.7993 | macro-F1=0.6519
+  ✓ Saved best checkpoint to checkpoints/T1_varlen\best.pt
+  step 2000/119510 | loss(last 2000)=0.0404 | elapsed=1.5min | epoch_eta=90.8min
+  step 4000/119510 | loss(last 2000)=0.0398 | elapsed=3.0min | epoch_eta=88.1min
+  step 6000/119510 | loss(last 2000)=0.0481 | elapsed=4.6min | epoch_eta=86.5min
+  step 8000/119510 | loss(last 2000)=0.0373 | elapsed=6.1min | epoch_eta=85.0min
+  step 10000/119510 | loss(last 2000)=0.0433 | elapsed=7.6min | epoch_eta=83.2min
+  step 12000/119510 | loss(last 2000)=0.0415 | elapsed=9.1min | epoch_eta=81.5min
+  step 14000/119510 | loss(last 2000)=0.0430 | elapsed=10.6min | epoch_eta=79.8min
+  step 16000/119510 | loss(last 2000)=0.0431 | elapsed=12.2min | epoch_eta=78.6min
+  step 18000/119510 | loss(last 2000)=0.0404 | elapsed=13.7min | epoch_eta=77.1min
+  step 20000/119510 | loss(last 2000)=0.0395 | elapsed=15.2min | epoch_eta=75.5min
+  step 22000/119510 | loss(last 2000)=0.0404 | elapsed=16.7min | epoch_eta=74.0min
+  step 24000/119510 | loss(last 2000)=0.0394 | elapsed=18.2min | epoch_eta=72.4min
+  step 26000/119510 | loss(last 2000)=0.0395 | elapsed=19.7min | epoch_eta=70.8min
+  step 28000/119510 | loss(last 2000)=0.0414 | elapsed=21.2min | epoch_eta=69.3min
+  step 30000/119510 | loss(last 2000)=0.0437 | elapsed=22.7min | epoch_eta=67.7min
+  step 32000/119510 | loss(last 2000)=0.0402 | elapsed=24.2min | epoch_eta=66.2min
+  step 34000/119510 | loss(last 2000)=0.0409 | elapsed=25.7min | epoch_eta=64.7min
+  step 36000/119510 | loss(last 2000)=0.0426 | elapsed=27.2min | epoch_eta=63.1min
+  step 38000/119510 | loss(last 2000)=0.0403 | elapsed=28.7min | epoch_eta=61.6min
+  step 40000/119510 | loss(last 2000)=0.0416 | elapsed=30.4min | epoch_eta=60.3min
+  step 42000/119510 | loss(last 2000)=0.0402 | elapsed=31.8min | epoch_eta=58.8min
+  step 44000/119510 | loss(last 2000)=0.0432 | elapsed=33.4min | epoch_eta=57.2min
+  step 46000/119510 | loss(last 2000)=0.0371 | elapsed=34.9min | epoch_eta=55.7min
+  step 48000/119510 | loss(last 2000)=0.0469 | elapsed=36.4min | epoch_eta=54.2min
+  step 50000/119510 | loss(last 2000)=0.0348 | elapsed=37.9min | epoch_eta=52.7min
+  step 52000/119510 | loss(last 2000)=0.0364 | elapsed=39.4min | epoch_eta=51.1min
+  step 54000/119510 | loss(last 2000)=0.0411 | elapsed=40.9min | epoch_eta=49.6min
+  step 56000/119510 | loss(last 2000)=0.0380 | elapsed=42.4min | epoch_eta=48.1min
+  step 58000/119510 | loss(last 2000)=0.0350 | elapsed=43.9min | epoch_eta=46.6min
+  step 60000/119510 | loss(last 2000)=0.0399 | elapsed=45.5min | epoch_eta=45.1min
+  step 62000/119510 | loss(last 2000)=0.0385 | elapsed=47.0min | epoch_eta=43.6min
+  step 64000/119510 | loss(last 2000)=0.0365 | elapsed=48.5min | epoch_eta=42.1min
+  step 66000/119510 | loss(last 2000)=0.0360 | elapsed=50.0min | epoch_eta=40.5min
+  step 68000/119510 | loss(last 2000)=0.0420 | elapsed=51.5min | epoch_eta=39.0min
+  step 70000/119510 | loss(last 2000)=0.0408 | elapsed=53.1min | epoch_eta=37.5min
+  step 72000/119510 | loss(last 2000)=0.0371 | elapsed=54.6min | epoch_eta=36.0min
+  step 74000/119510 | loss(last 2000)=0.0393 | elapsed=56.1min | epoch_eta=34.5min
+  step 76000/119510 | loss(last 2000)=0.0408 | elapsed=57.7min | epoch_eta=33.0min
+  step 78000/119510 | loss(last 2000)=0.0356 | elapsed=59.3min | epoch_eta=31.6min
+  step 80000/119510 | loss(last 2000)=0.0381 | elapsed=60.9min | epoch_eta=30.1min
+  step 82000/119510 | loss(last 2000)=0.0405 | elapsed=62.4min | epoch_eta=28.6min
+  step 84000/119510 | loss(last 2000)=0.0368 | elapsed=63.9min | epoch_eta=27.0min
+  step 86000/119510 | loss(last 2000)=0.0400 | elapsed=65.5min | epoch_eta=25.5min
+  step 88000/119510 | loss(last 2000)=0.0366 | elapsed=67.0min | epoch_eta=24.0min
+  step 90000/119510 | loss(last 2000)=0.0367 | elapsed=68.5min | epoch_eta=22.5min
+  step 92000/119510 | loss(last 2000)=0.0401 | elapsed=70.0min | epoch_eta=20.9min
+  step 94000/119510 | loss(last 2000)=0.0361 | elapsed=71.6min | epoch_eta=19.4min
+  step 96000/119510 | loss(last 2000)=0.0356 | elapsed=73.2min | epoch_eta=17.9min
+  step 98000/119510 | loss(last 2000)=0.0361 | elapsed=74.7min | epoch_eta=16.4min
+  step 100000/119510 | loss(last 2000)=0.0359 | elapsed=76.2min | epoch_eta=14.9min
+  step 102000/119510 | loss(last 2000)=0.0408 | elapsed=77.7min | epoch_eta=13.3min
+  step 104000/119510 | loss(last 2000)=0.0352 | elapsed=79.2min | epoch_eta=11.8min
+  step 106000/119510 | loss(last 2000)=0.0430 | elapsed=80.8min | epoch_eta=10.3min
+  step 108000/119510 | loss(last 2000)=0.0381 | elapsed=82.3min | epoch_eta=8.8min
+  step 110000/119510 | loss(last 2000)=0.0364 | elapsed=83.8min | epoch_eta=7.2min
+  step 112000/119510 | loss(last 2000)=0.0358 | elapsed=85.3min | epoch_eta=5.7min
+  step 114000/119510 | loss(last 2000)=0.0387 | elapsed=86.8min | epoch_eta=4.2min
+  step 116000/119510 | loss(last 2000)=0.0384 | elapsed=88.4min | epoch_eta=2.7min
+  step 118000/119510 | loss(last 2000)=0.0344 | elapsed=89.9min | epoch_eta=1.2min
+Epoch 3/3 | train_loss=0.0394 | val_loss=0.0758 | time=5880.5s
+  Val micro-F1=0.8037 | macro-F1=0.6636
+  ✓ Saved best checkpoint to checkpoints/T1_varlen\best.pt
+
+Training finished. Best val micro-F1=0.8037, checkpoint=checkpoints/T1_varlen\best.pt
+E:\anaconda\app\envs\yolov8\lib\site-packages\torch\nn\modules\module.py:1160: UserWarning: expandable_segments not sup
+ported on this platform (Triggered internally at C:\cb\pytorch_1000000000000\work\c10/cuda/CUDAAllocatorConfig.h:28.)
+  return t.to(
+E:\anaconda\app\envs\yolov8\lib\site-packages\transformers\models\bert\modeling_bert.py:440: UserWarning: 1Torch was no
+t compiled with flash attention. (Triggered internally at C:\cb\pytorch_1000000000000\work\aten\src\ATen\native\transfo
+rmers\cuda\sdp_utils.cpp:555.)
+  attn_output = torch.nn.functional.scaled_dot_product_attention(

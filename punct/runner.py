@@ -47,17 +47,24 @@ def _single_model_fn(logits_fn: LogitsFn, cls_id, sep_id, device) -> Callable:
     return fn
 
 
-def _batch_model_fn(logits_fn: LogitsFn, cls_id, sep_id, pad_id, device) -> Callable:
+def _batch_model_fn(logits_fn: LogitsFn, cls_id, sep_id, pad_id, device, max_batch: int = 8) -> Callable:
+    """cross-article serial hands over every unfinished article at once (thousands
+    of chunks). Run them through the model in sub-batches of at most max_batch so
+    peak GPU memory stays bounded; per-chunk outputs are unchanged (attention mask)."""
     def fn(chunks):
-        m = max(len(c) for c in chunks) + 2
-        ids = np.full((len(chunks), m), pad_id, dtype=np.int64)
-        mask = np.zeros((len(chunks), m), dtype=np.int64)
-        for i, c in enumerate(chunks):
-            n = len(c)
-            ids[i, 0], ids[i, 1:1 + n], ids[i, 1 + n] = cls_id, np.asarray(c, dtype=np.int64), sep_id
-            mask[i, :n + 2] = 1
-        lg = logits_fn(torch.from_numpy(ids).to(device), torch.from_numpy(mask).to(device)).argmax(-1).cpu().numpy()
-        return [lg[i, 1:1 + len(c)] for i, c in enumerate(chunks)]
+        out = []
+        for s in range(0, len(chunks), max_batch):
+            sub = chunks[s:s + max_batch]
+            m = max(len(c) for c in sub) + 2
+            ids = np.full((len(sub), m), pad_id, dtype=np.int64)
+            mask = np.zeros((len(sub), m), dtype=np.int64)
+            for i, c in enumerate(sub):
+                n = len(c)
+                ids[i, 0], ids[i, 1:1 + n], ids[i, 1 + n] = cls_id, np.asarray(c, dtype=np.int64), sep_id
+                mask[i, :n + 2] = 1
+            lg = logits_fn(torch.from_numpy(ids).to(device), torch.from_numpy(mask).to(device)).argmax(-1).cpu().numpy()
+            out.extend(lg[i, 1:1 + len(c)] for i, c in enumerate(sub))
+        return out
     return fn
 
 

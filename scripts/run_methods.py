@@ -11,6 +11,7 @@ read them instead of re-running the model.
 from __future__ import annotations
 
 import argparse
+import json
 import os
 import sys
 
@@ -54,9 +55,29 @@ def main() -> None:
     logits_fn = make_logits_fn(model)
     special = (codec.cls_id, codec.sep_id, codec.pad_id)
 
-    result = {"ckpt": args.ckpt, "split": args.split, "n_articles": len(chars), "methods": {}}
+    run_args = dict(window=args.window, overlap=args.overlap, tail=args.tail, mask_left=args.mask_left,
+                    mask_right=args.mask_right, profile=args.profile, batch_size=args.batch_size)
+    result = {"ckpt": args.ckpt, "split": args.split, "n_articles": len(chars), "run_args": run_args,
+              "methods": {}}
     preds_out = {}
+    # Per-method checkpointing: after every method the partial result is written, so a crash in
+    # a later method does not discard earlier ones. A restart with the same settings skips them.
+    part_json, part_npz = args.out + ".partial.json", args.out + ".partial.npz"
+    if os.path.exists(part_json) and os.path.exists(part_npz):
+        with open(part_json, encoding="utf-8") as fh:
+            prev = json.load(fh)
+        same = all(prev.get(k) == result[k] for k in ("ckpt", "split", "n_articles", "run_args"))
+        if same:
+            with np.load(part_npz) as z:
+                preds_out = {k: z[k] for k in z.files}
+            result["methods"] = {k: v for k, v in prev["methods"].items() if k in preds_out}
+            print(f"resuming: already done {list(result['methods'])}", flush=True)
+        else:
+            print("partial result found but settings differ; ignoring it", flush=True)
     for name in args.methods:
+        if name in result["methods"]:
+            print(f"{name}: skipped (done in an earlier attempt)", flush=True)
+            continue
         kw = {}
         if name == "parallel":
             kw = dict(window=args.window, overlap=args.overlap, tail=args.tail, mask_left=args.mask_left,
@@ -73,9 +94,15 @@ def main() -> None:
         preds_out[name] = np.concatenate(pred)
         print(f"{name}: micro_f1={entry['quality']['micro_f1']:.4f} "
               f"chars/s={stats['chars_per_second']:.0f} seconds={stats['seconds']:.1f}", flush=True)
+        # save after every method so a later crash keeps this one
+        np.savez_compressed(part_npz, **preds_out)
+        dump(part_json, result)
     dump(args.out, result)
     if args.save_preds:
         np.savez_compressed(args.save_preds, **preds_out)
+    for p in (part_json, part_npz):
+        if os.path.exists(p):
+            os.remove(p)
 
 
 if __name__ == "__main__":

@@ -62,6 +62,8 @@ def main() -> None:
     args = ap.parse_args()
 
     _, gold = load_split(args.data_dir, args.split)
+    skipped_len = sum(len(g) for g in gold[:args.skip])
+    total_len_all = sum(len(g) for g in gold)
     gold = gold[args.skip:]
     if args.limit:
         gold = gold[:args.limit]
@@ -72,6 +74,10 @@ def main() -> None:
         if name not in z.files:
             raise KeyError(f"{name!r} not in {path}; available: {z.files}")
         flat = z[name]
+        # A prediction file written over the whole split (e.g. E4) is cut down to the
+        # evaluated range; a file already written for the skipped range (e.g. E7) is used as is.
+        if flat.shape[0] == total_len_all and total_len_all != sum(lengths):
+            flat = flat[skipped_len:skipped_len + sum(lengths)]
         if flat.shape[0] != sum(lengths):
             raise ValueError(f"{path}:{name} has {flat.shape[0]} labels, expected {sum(lengths)} "
                              "(check --skip/--limit match the run that wrote it)")
